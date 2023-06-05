@@ -1,0 +1,14 @@
+C:\Users\AJ\codebases\research-project\research-project\bin\Debug\research_project.exe.config
+C:\Users\AJ\codebases\research-project\research-project\bin\Debug\research_project.exe
+C:\Users\AJ\codebases\research-project\research-project\bin\Debug\research_project.pdb
+C:\Users\AJ\codebases\research-project\research-project\obj\Debug\research-project.csproj.AssemblyReference.cache
+C:\Users\AJ\codebases\research-project\research-project\obj\Debug\research-project.csproj.SuggestedBindingRedirects.cache
+C:\Users\AJ\codebases\research-project\research-project\obj\Debug\research_project.Properties.Resources.resources
+C:\Users\AJ\codebases\research-project\research-project\obj\Debug\research-project.csproj.GenerateResource.cache
+C:\Users\AJ\codebases\research-project\research-project\obj\Debug\research-project.csproj.CoreCompileInputs.cache
+C:\Users\AJ\codebases\research-project\research-project\obj\Debug\research_project.exe
+C:\Users\AJ\codebases\research-project\research-project\obj\Debug\research_project.pdb
+C:\Users\AJ\codebases\research-project\research-project\obj\Debug\research_project.Form1.resources
+C:\Users\AJ\codebases\research-project\research-project\bin\Debug\aa-DJ\research_project.resources.dll
+C:\Users\AJ\codebases\research-project\research-project\obj\Debug\research_project.Form1.aa-DJ.resources
+C:\Users\AJ\codebases\research-project\research-project\obj\Debug\aa-DJ\research_project.resources.dll
