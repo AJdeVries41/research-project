@@ -53,8 +53,10 @@
         <Compile Include="Form1.Designer.cs">
             <DependentUpon>Form1.cs</DependentUpon>
         </Compile>
+        <Compile Include="GeomUtils.cs" />
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Tiling.cs" />
         <EmbeddedResource Include="Form1.aa-DJ.resx">
           <DependentUpon>Form1.cs</DependentUpon>
         </EmbeddedResource>
