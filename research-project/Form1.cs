@@ -66,12 +66,6 @@ namespace research_project
             {
                 Console.WriteLine("i: " + i);
                 (double, double) inversion = InvertPoint(inits[i], unitCircle.centerPoint, unitCircle.r);
-                double a = inversion.Item1;
-                double b = inversion.Item2;
-                double c = inits[i].Item1;
-                double d = inits[i].Item2;
-                double e = inits[i + 1].Item1;
-                double f = inits[i + 1].Item2;
                 Circle circle = CircleFromThreePoints(inversion, inits[i], inits[i + 1]);
                 circles.Add(circle);
             }
@@ -93,21 +87,6 @@ namespace research_project
 
 
 
-        }
-
-        // <summary>
-        // Takes a point that is in normal Euclidean space w/ origin (0, 0)
-        // and converts it to a point in the screen space (w/ origin (res.x/2, res.y/2))
-        //</summary>
-        public Point ConvertToScreenSpace((double, double) point)
-        {
-            int resX = this.ClientSize.Width;
-            int resY = this.ClientSize.Height;
-
-            int p1 = (int)Math.Round(point.Item1);
-            int p2 = (int)Math.Round(point.Item2);
-
-            return new Point(resX + p1, resY + p2);
         }
 
         private void DrawPoint(Graphics g, Point p)
@@ -163,21 +142,31 @@ namespace research_project
         //Takes a point inside a circle and returns a point outside of the circle
         public (double, double) InvertPoint((double, double) point, (double, double) center, double r)
         {
+            
             double x = point.Item1;
             double y = point.Item2;
             double centerX = center.Item1;
             double centerY = center.Item2;
             
-            double originToX = x - centerX;
-            double originToY = y - centerY;
+            double EPSILON = 0.000001;
 
-            var phi = Math.Atan2(originToY, originToX);
-            var hypot = Math.Sqrt(Math.Pow(originToX, 2) + Math.Pow(originToX, 2));
+            double centerToX = x - centerX;
+            double centerToY = y - centerY;
             
-            var originToInversion = Math.Pow(r, 2) / hypot;
+            var hypot = Math.Sqrt(Math.Pow(centerToX, 2) + Math.Pow(centerToY, 2));
 
-            var invX = centerX + (originToInversion * Math.Cos(phi));
-            var invY = centerY + (originToInversion * Math.Sin(phi));
+            if (Math.Abs(hypot) < EPSILON)
+            {
+                throw new ArithmeticException(
+                    "Cannot invert a centerPoint of a circle (this would result in division by zero)");
+            }
+            
+            var phi = Math.Atan2(centerToY, centerToX);
+
+            var distCenterToInversion = Math.Pow(r, 2) / hypot;
+
+            var invX = centerX + (distCenterToInversion * Math.Cos(phi));
+            var invY = centerY + (distCenterToInversion * Math.Sin(phi));
 
             return (invX, invY);
         }
@@ -212,6 +201,8 @@ namespace research_project
 
             double centerX = (c1 * b2 - b1 * c2) / (a1 * b2 - b1 * a2);
             double centerY = (a1 * c2 - c1 * a2) / (a1 * b2 - b1 * a2);
+
+            
 
             //calculate r using any equation, e.g. the first
             double r = Math.Sqrt(Math.Pow(a - centerX, 2) + Math.Pow(b - centerY, 2));
