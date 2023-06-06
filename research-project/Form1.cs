@@ -36,56 +36,64 @@ namespace research_project
             //It still kinda makes sense tho, since we still use the point that is "closest" to the origin in all cases.
             
             //X-axis
-            g.DrawLine(Pens.Cyan, new Point(0, 0), new Point(50, 0));
+            g.DrawLine(Pens.Cyan, new Point(0, 0), new Point(300, 0));
             
             //Y-axis
-            g.DrawLine(Pens.Cyan, new Point(0, 0), new Point(0, 50));
+            g.DrawLine(Pens.Cyan, new Point(0, 0), new Point(0, 300));
+            
+            var lesserScreenSize = Math.Min(this.ClientSize.Width, this.ClientSize.Height);
 
-            Circle unitCircle = new Circle(200, (0, 0));
-            
-            
+            Circle unitCircle = new Circle(lesserScreenSize / 2, (0, 0));
             //Draw the unit circle
-            DrawCircle(g, Pens.Purple, 200, new Point(0, 0));
+            DrawCircle(g, Pens.Purple, new Circle(lesserScreenSize / 2, (0, 0)));
 
-            List<(double, double)> inits = InitialVertices(50, 4);
-            
-            Console.WriteLine(inits.Count);
-
-            foreach (var pair in inits)
-            {
-                //Only convert to "Point" when we actually need to draw it, because you lose
-                //precision when you do that
-                Point p = new Point((int)Math.Round(pair.Item1), (int)Math.Round(pair.Item2));
-                DrawPoint(g, p);
-            }
-
+            List<(double, double)> inits = InitialVertices(100, 4);
             List<Circle> circles = new List<Circle>();
-            
             //for each pair of adjacent points
-            for (int i = 0; i < inits.Count - 1; i++)
+            int j = 1;
+            for (int i = 0; i < inits.Count; i++)
             {
-                Console.WriteLine("i: " + i);
                 (double, double) inversion = InvertPoint(inits[i], unitCircle.centerPoint, unitCircle.r);
-                Circle circle = CircleFromThreePoints(inversion, inits[i], inits[i + 1]);
-                circles.Add(circle);
+                Circle connectingCircle = CircleFromThreePoints(inversion, inits[i], inits[j]);
+                circles.Add(connectingCircle);
+                j++;
+                if (j == inits.Count)
+                {
+                    j = 0;
+                }
             }
 
-            (double, double) lastInversion =
-                InvertPoint(inits[inits.Count - 1], unitCircle.centerPoint, unitCircle.r);
-            Circle lastCircle = CircleFromThreePoints(lastInversion, inits[inits.Count - 1], inits[0]);
-            circles.Add(lastCircle);
-
-            Console.WriteLine("Circles.size: " + circles.Count);
-
-            foreach (var circle in circles)
+            //Draw the initial tile, based on the initial points
+            //for each pair of adjacent points
+            j = 1;
+            for (int i = 0; i < inits.Count; i++)
             {
-                DrawCircle(g, Pens.Red, circle);
+                var circleCentreX = circles[i].centerPoint.Item1;
+                var circleCentreY = circles[i].centerPoint.Item2;
+                var startX = inits[i].Item1;
+                var startY = inits[i].Item2;
+                var destX = inits[j].Item1;
+                var destY = inits[j].Item2;
+                //I'm going to just use radians counterclockwise for angles and convert in the end
+                var startAngle = Math.Atan2(startY - circleCentreY, startX - circleCentreX);
+                var destAngle = Math.Atan2(destY - circleCentreY, destX - circleCentreX);
+                var diffAngle = destAngle - startAngle;
+                var degreeStartAngle = (180/Math.PI) * startAngle;
+                var degreeDiffAngle = (180 / Math.PI) * diffAngle;
+                
+                g.DrawArc(Pens.Red, circles[i].GetRectangle(), (float)degreeStartAngle, (float)degreeDiffAngle);
+                
+                j++;
+                if (j == inits.Count)
+                {
+                    j = 0;
+                }
             }
-            
-            
-            
 
-
+            // foreach (var circle in circles)
+            // {
+            //     DrawCircle(g, Pens.Red, circle);
+            // }
 
         }
 
@@ -96,28 +104,13 @@ namespace research_project
 
         private void DrawCircle(Graphics g, Pen p, Circle c)
         {
-            int r = (int) Math.Round(c.r);
-            int x = (int) Math.Round(c.centerPoint.Item1);
-            int y = (int) Math.Round(c.centerPoint.Item2);
-            DrawCircle(g, p, r, new Point(x, y));
-        }
-
-        private void DrawCircle(Graphics g, Pen p, int r, Point centerPoint)
-        {
-            Point bottomLeft = new Point()
-            {
-                X=centerPoint.X-r,
-                Y=centerPoint.Y-r
-            };
-            Console.WriteLine("bottomLeft x: " + bottomLeft.X);
-            Console.WriteLine("bottomLeft y: " + bottomLeft.Y);
-            Size rectangleSize = new Size(2 * r, 2 * r);
-            Rectangle boundingRectangle = new Rectangle(bottomLeft, rectangleSize);
+            Rectangle boundingRectangle = c.GetRectangle();
             g.DrawEllipse(p, boundingRectangle);
         }
-        
+
         /// <summary>
-        /// Draw the first p points a distance d from the origin
+        /// Calculates the first p points a distance d from the origin
+        /// The first point is always generated a distance at x=d, y=0
         /// </summary>
         /// <param name="d"></param>
         /// <returns>A list of initial points from the origin point (0, 0)</returns>
@@ -127,7 +120,7 @@ namespace research_project
             double angle = 2 * Math.PI / p;
             List<(double, double)> result = new List<(double, double)>();
 
-            double curAngle = angle;
+            double curAngle = 0;
             for (int i = 0; i < p; i++)
             {
                 double x = d * Math.Cos(curAngle);
@@ -136,6 +129,13 @@ namespace research_project
                 result.Add((x, y));
             }
             return result;
+        }
+
+        public double Distance((double, double) p1, (double, double) p2)
+        {
+            var xDiff = p1.Item1 - p2.Item1;
+            var yDiff = p1.Item2 - p2.Item2;
+            return Math.Sqrt(Math.Pow(xDiff, 2) + Math.Pow(yDiff, 2));
         }
         
         //see https://www.malinc.se/noneuclidean/en/circleinversion.php

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace research_project
 {
@@ -12,7 +13,24 @@ namespace research_project
             this.r = r;
             this.centerPoint = p;
         }
-        
-        
+
+        public Rectangle GetRectangle()
+        {
+            int r = (int) Math.Round(this.r);
+            int cx = (int) Math.Round(this.centerPoint.Item1);
+            int cy = (int) Math.Round(this.centerPoint.Item2);
+            Point bottomLeft = new Point()
+            {
+                X=cx-r,
+                Y=cy-r
+            };
+            Console.WriteLine("bottomLeft x: " + bottomLeft.X);
+            Console.WriteLine("bottomLeft y: " + bottomLeft.Y);
+            Size rectangleSize = new Size(2 * r, 2 * r);
+            Rectangle boundingRectangle = new Rectangle(bottomLeft, rectangleSize);
+            return boundingRectangle;
+        }
+
+
     }
 }
