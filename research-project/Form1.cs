@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 
 namespace research_project
 {
@@ -34,6 +33,7 @@ namespace research_project
             //however, now we have to use the bottomLeft point because we flipped every point across the 
             //y-axis.
             //It still kinda makes sense tho, since we still use the point that is "closest" to the origin in all cases.
+            //Also, now g.DrawArc draws arcs counterclockwise
             
             //X-axis
             g.DrawLine(Pens.Cyan, new Point(0, 0), new Point(300, 0));
@@ -45,9 +45,12 @@ namespace research_project
 
             Circle unitCircle = new Circle(lesserScreenSize / 2, (0, 0));
             //Draw the unit circle
-            DrawCircle(g, Pens.Purple, new Circle(lesserScreenSize / 2, (0, 0)));
+            g.DrawEllipse(Pens.Purple, unitCircle.GetRectangle());
 
-            List<(double, double)> inits = InitialVertices(100, 4);
+            //To demonstrate, this draws the unitCircle from 0 degrees to 270 degrees counterclockwise
+           // g.DrawArc(Pens.Yellow, unitCircle.GetRectangle(), 0F, 270F);
+
+            List<(double, double)> inits = InitialVertices(175, 4);
             List<Circle> circles = new List<Circle>();
             //for each pair of adjacent points
             int j = 1;
@@ -64,24 +67,30 @@ namespace research_project
             }
 
             //Draw the initial tile, based on the initial points
-            //for each pair of adjacent points
+            //for each pair of adjacent points, draw an arc counterclockwise from inits[j] to inits[i]
             j = 1;
             for (int i = 0; i < inits.Count; i++)
             {
                 var circleCentreX = circles[i].centerPoint.Item1;
                 var circleCentreY = circles[i].centerPoint.Item2;
-                var startX = inits[i].Item1;
-                var startY = inits[i].Item2;
-                var destX = inits[j].Item1;
-                var destY = inits[j].Item2;
-                //I'm going to just use radians counterclockwise for angles and convert in the end
-                var startAngle = Math.Atan2(startY - circleCentreY, startX - circleCentreX);
-                var destAngle = Math.Atan2(destY - circleCentreY, destX - circleCentreX);
-                var diffAngle = destAngle - startAngle;
-                var degreeStartAngle = (180/Math.PI) * startAngle;
-                var degreeDiffAngle = (180 / Math.PI) * diffAngle;
+                //we are drawing the circle counterclockwise from the 2nd point to the 1st point
+                var startX = inits[j].Item1;
+                var startY = inits[j].Item2;
+                var destX = inits[i].Item1;
+                var destY = inits[i].Item2;
                 
-                g.DrawArc(Pens.Red, circles[i].GetRectangle(), (float)degreeStartAngle, (float)degreeDiffAngle);
+                var startAngle = AngleConverter(Math.Atan2(startY - circleCentreY, startX - circleCentreX));
+                var destAngle = AngleConverter(Math.Atan2(destY - circleCentreY, destX - circleCentreX));
+                if (destAngle < startAngle)
+                {
+                    destAngle += 2 * Math.PI;
+                }
+                //we can now assume that destAngle is necessarily larger than startAngle
+                var diffAngle = destAngle - startAngle;
+                float degreeStartAngle = (float) ((180/Math.PI) * startAngle);
+                float degreeDiffAngle = (float) ((180 / Math.PI) * diffAngle);
+
+                g.DrawArc(Pens.Red, circles[i].GetRectangle(), degreeStartAngle, degreeDiffAngle);
                 
                 j++;
                 if (j == inits.Count)
@@ -96,21 +105,27 @@ namespace research_project
             // }
 
         }
+        
+        //Converts an angle like -PI/4 to 7*PI/4
+        //Positive angles remain the same
+        private double AngleConverter(double angle)
+        {
+            if (angle < 0)
+            {
+                return (2 * Math.PI) - Math.Abs(angle);
+            }
+
+            return angle;
+        }
 
         private void DrawPoint(Graphics g, Point p)
         {
             g.FillRectangle(Brushes.Red, p.X, p.Y, 1, 1);
         }
 
-        private void DrawCircle(Graphics g, Pen p, Circle c)
-        {
-            Rectangle boundingRectangle = c.GetRectangle();
-            g.DrawEllipse(p, boundingRectangle);
-        }
-
         /// <summary>
         /// Calculates the first p points a distance d from the origin
-        /// The first point is always generated a distance at x=d, y=0
+        /// The first point is always generated at x=d, y=0
         /// </summary>
         /// <param name="d"></param>
         /// <returns>A list of initial points from the origin point (0, 0)</returns>
@@ -120,7 +135,7 @@ namespace research_project
             double angle = 2 * Math.PI / p;
             List<(double, double)> result = new List<(double, double)>();
 
-            double curAngle = 0;
+            double curAngle = Math.PI/4;
             for (int i = 0; i < p; i++)
             {
                 double x = d * Math.Cos(curAngle);
