@@ -13,6 +13,10 @@ namespace research_project
 
         public Tiling(int p, int q, int smallestResolution)
         {
+            if (!IsValidTiling(p, q))
+            {
+                throw new InvalidOperationException($"Invalid tiling of {{{p}, {q}}} given");
+            }
             this.p = p;
             this.q = q;
             //see https://www.malinc.se/noneuclidean/en/poincaretiling.php why this.d is calculated like this
@@ -22,6 +26,11 @@ namespace research_project
             this.d = (int) Math.Round(d * (smallestResolution / 2));
             this.unitCircle = new Circle(smallestResolution / 2, (0, 0));
         }
+
+        public static bool IsValidTiling(int p, int q)
+        {
+            return (p-2)*(q-2) > 4;
+        }
         
         /// <summary>
         /// Calculates the first p points a distance d from the origin
@@ -29,13 +38,13 @@ namespace research_project
         /// </summary>
         /// <param name="d"></param>
         /// <returns>A list of initial points from the origin point (0, 0)</returns>
-        public List<(double, double)> InitialVertices()
+        public List<(double, double)> InitialVertices(double initialRotation)
         {
 
             double angle = 2 * Math.PI / p;
             List<(double, double)> result = new List<(double, double)>();
 
-            double curAngle = Math.PI/4;
+            double curAngle = 0 + initialRotation;
             for (int i = 0; i < p; i++)
             {
                 double x = d * Math.Cos(curAngle);

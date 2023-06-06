@@ -62,50 +62,28 @@ namespace research_project
             //To demonstrate, this draws the unitCircle from 0 degrees to 270 degrees counterclockwise
            // g.DrawArc(Pens.Yellow, unitCircle.GetRectangle(), 0F, 270F);
 
-           List<(double, double)> inits = t.InitialVertices();
+           List<(double, double)> inits = t.InitialVertices(Math.PI/4);
 
            List<Circle> initialCircles = t.InitialCircles(inits);
-           
-           DrawInitialTile(g, inits, initialCircles);
+
+           Tile initialTile = new Tile(inits, initialCircles);
+           initialTile.ComputeTile();
+
+           DrawTile(g, initialTile);
 
         }
 
-        private void DrawInitialTile(Graphics g, List<(double, double)> inits, List<Circle> circles)
+        private void DrawTile(Graphics g, Tile t)
         {
-            //Draw the initial tile, based on the initial points
-            //for each pair of adjacent points, draw an arc counterclockwise from inits[j] to inits[i]
-            int j = 1;
-            for (int i = 0; i < inits.Count; i++)
+            //any edge of the tile is represented by its circles and its angles how it should be drawn
+            for (int i = 0; i < t.circles.Count; i++)
             {
-                var circleCentreX = circles[i].centerPoint.Item1;
-                var circleCentreY = circles[i].centerPoint.Item2;
-                //we are drawing the circle counterclockwise from the 2nd point to the 1st point
-                var startX = inits[j].Item1;
-                var startY = inits[j].Item2;
-                var destX = inits[i].Item1;
-                var destY = inits[i].Item2;
-
-                var startAngle = GeomUtils.AngleConverter(Math.Atan2(startY - circleCentreY, startX - circleCentreX));
-                var destAngle = GeomUtils.AngleConverter(Math.Atan2(destY - circleCentreY, destX - circleCentreX));
-                if (destAngle < startAngle)
-                {
-                    destAngle += 2 * Math.PI;
-                }
-                //we can now assume that destAngle is necessarily larger than startAngle
-                var diffAngle = destAngle - startAngle;
-                float degreeStartAngle = (float) ((180/Math.PI) * startAngle);
-                float degreeDiffAngle = (float) ((180 / Math.PI) * diffAngle);
-
-                g.DrawArc(Pens.Red, circles[i].GetRectangle(), degreeStartAngle, degreeDiffAngle);
-                
-                j++;
-                if (j == inits.Count)
-                {
-                    j = 0;
-                }
+                float startAngle = t.angles[i].Item1;
+                float diffAngle = t.angles[i].Item2;
+                g.DrawArc(Pens.Red, t.circles[i].GetRectangle(), startAngle, diffAngle);
             }
         }
-        
+
         private void DrawPoint(Graphics g, Point p)
         {
             g.FillRectangle(Brushes.Red, p.X, p.Y, 1, 1);
