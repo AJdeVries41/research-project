@@ -24,8 +24,6 @@ namespace research_project
                 X=cx-r,
                 Y=cy-r
             };
-            Console.WriteLine("bottomLeft x: " + bottomLeft.X);
-            Console.WriteLine("bottomLeft y: " + bottomLeft.Y);
             Size rectangleSize = new Size(2 * r, 2 * r);
             Rectangle boundingRectangle = new Rectangle(bottomLeft, rectangleSize);
             return boundingRectangle;

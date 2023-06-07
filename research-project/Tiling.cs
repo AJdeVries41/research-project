@@ -14,13 +14,10 @@ namespace research_project
 
         public List<(double, double)> initialPoints;
         public List<Circle> initialCircles;
-
-        public Tile InitialTile;
-        
         public List<Tile> tiles;
         
 
-        // Saves all relevant info for the tiling and also builds the initial tile
+        // Saves all relevant info for the tiling
         public Tiling(int p, int q, int smallestResolution, double initialRotation)
         {
             if (!IsValidTiling(p, q))
@@ -40,9 +37,7 @@ namespace research_project
 
             this.initialPoints = this.InitialVertices();
             this.initialCircles = this.InitialCircles();
-            this.InitialTile = new Tile(this.initialPoints, this.initialCircles);
-            
-            
+
             this.tiles = new List<Tile>();
 
         }
@@ -50,11 +45,15 @@ namespace research_project
         //Generates a tiling by continuously adding new Tile objects to the tile list
         public void GenerateTiling(Graphics g)
         {
-            g.DrawEllipse(Pens.Purple, this.unitCircle.GetRectangle());
-            Tile current = InitialTile;
-            current.Draw(g);
+            Tile current = new Tile(this.initialPoints, this.initialCircles);
+            this.tiles.Add(current);
+
+            int NUM_ITERATIONS = 4;
+
+            
             for (int i = 0; i < current.edges.Count; i++)
             {
+                List<Geodesic> newEdges = new List<Geodesic>();
                 //reflect all edges[j] into edges[i]
                 for (int j = 0; j < current.edges.Count; j++)
                 {
@@ -64,16 +63,23 @@ namespace research_project
                     }
 
                     Geodesic reflection = Geodesic.ReflectIntoEdge(current.edges[j], current.edges[i]);
-                    reflection.Draw(g);
+                    newEdges.Add(reflection);
                 }
+                Tile newTile = new Tile(newEdges);
+                this.tiles.Add(newTile);
             }
+            
+            
         }
         
         public void DrawTiling(Graphics g)
         {
-            //Draw the unit circle
+            //Draw unit circle
             g.DrawEllipse(Pens.Purple, this.unitCircle.GetRectangle());
-            InitialTile.Draw(g);
+            foreach (var tile in this.tiles)
+            {
+                tile.Draw(g);
+            }
         }
 
         public static bool IsValidTiling(int p, int q)
