@@ -54,21 +54,17 @@ namespace research_project
             
             var lesserScreenSize = Math.Min(this.ClientSize.Width, this.ClientSize.Height);
             
-            Tiling t = new Tiling(4, 5, lesserScreenSize);
+            Tiling t = new Tiling(4, 5, lesserScreenSize, Math.PI/4);
             
-            //Draw the unit circle
-            g.DrawEllipse(Pens.Purple, t.unitCircle.GetRectangle());
+            t.GenerateTiling(g);
+            
+            //t.DrawTiling(g);
 
             //To demonstrate, this draws the unitCircle from 0 degrees to 270 degrees counterclockwise
            // g.DrawArc(Pens.Yellow, unitCircle.GetRectangle(), 0F, 270F);
+           
 
-           List<(double, double)> inits = t.InitialVertices(Math.PI/4);
-
-           List<Circle> initialCircles = t.InitialCircles(inits);
-
-           Tile initialTile = new Tile(inits, initialCircles);
-
-           DrawTile(g, initialTile);
+           // DrawTile(g, initialTile);
            //DrawTileCircles(g, initialTile);
            
            
@@ -129,25 +125,25 @@ namespace research_project
 
 
            //for each edge, reflect into this edge
-           for (int i = 0; i < t.p; i++)
-           {
-               var gs = new List<Geodesic>();
-               for (int j = 0; j < t.p; j++)
-               {
-                   if (i == j)
-                   {
-                       continue;
-                   }
-
-                   Geodesic result = initialTile.ReflectIntoEdge(j, i);
-                   gs.Add(result);
-               }
-
-               foreach (var geo in gs)
-               {
-                   g.DrawArc(Pens.Aquamarine, geo.c.GetRectangle(), geo.startAngle, geo.diffAngle);
-               }
-           }
+           // for (int i = 0; i < t.p; i++)
+           // {
+           //     var gs = new List<Geodesic>();
+           //     for (int j = 0; j < t.p; j++)
+           //     {
+           //         if (i == j)
+           //         {
+           //             continue;
+           //         }
+           //
+           //         Geodesic result = initialTile.ReflectIntoEdge(j, i);
+           //         gs.Add(result);
+           //     }
+           //
+           //     foreach (var geo in gs)
+           //     {
+           //         g.DrawArc(Pens.Aquamarine, geo.c.GetRectangle(), geo.startAngle, geo.diffAngle);
+           //     }
+           // }
 
 
 

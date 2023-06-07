@@ -39,6 +39,16 @@ namespace research_project
 
             return angle;
         }
+
+        public static (double, double) ConvertFromPolar(Circle c, double angle)
+        {
+            double cX = c.centerPoint.Item1;
+            double cY = c.centerPoint.Item2;
+            double r = c.r;
+            double centerToX = r * Math.Cos(angle);
+            double centerToY = r * Math.Sin(angle);
+            return AddPoints(c.centerPoint, (centerToX, centerToY));
+        }
         
         //see https://www.malinc.se/noneuclidean/en/circleinversion.php
         //Takes a point inside a circle and returns a point outside of the circle
