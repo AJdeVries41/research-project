@@ -125,16 +125,36 @@ namespace research_project
            
            //reflect left edge into top edge
 
-           Circle result = initialTile.ReflectIntoEdge(1, 0);
+           Circle result1 = initialTile.ReflectIntoEdge(1, 0);
            
-           g.DrawEllipse(Pens.Aquamarine, result.GetRectangle());
+           g.DrawEllipse(Pens.Aquamarine, result1.GetRectangle());
 
            Circle result2 = initialTile.ReflectIntoEdge(2, 0);
            Circle result3 = initialTile.ReflectIntoEdge(3, 0);
            
            g.DrawEllipse(Pens.Aquamarine, result2.GetRectangle());
            g.DrawEllipse(Pens.Aquamarine, result3.GetRectangle());
+           
+           //for each edge, reflect into this edge
+           for (int i = 0; i < t.p; i++)
+           {
+               var cs = new List<Circle>();
+               for (int j = 0; j < t.p; j++)
+               {
+                   if (i == j)
+                   {
+                       continue;
+                   }
 
+                   Circle result = initialTile.ReflectIntoEdge(j, i);
+                   cs.Add(result);
+               }
+
+               foreach (var c in cs)
+               {
+                   g.DrawEllipse(Pens.Aquamarine, c.GetRectangle());
+               }
+           }
 
 
 

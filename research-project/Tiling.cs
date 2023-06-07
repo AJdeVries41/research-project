@@ -5,8 +5,8 @@ namespace research_project
 {
     public class Tiling
     {
-        private int p;
-        private int q;
+        public int p;
+        public int q;
         private int d;
         public Circle unitCircle;
         
