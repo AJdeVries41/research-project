@@ -67,9 +67,74 @@ namespace research_project
            List<Circle> initialCircles = t.InitialCircles(inits);
 
            Tile initialTile = new Tile(inits, initialCircles);
-           initialTile.ComputeTile();
 
            DrawTile(g, initialTile);
+           //DrawTileCircles(g, initialTile);
+           
+           //example time
+           //reflect the bottom edge into the top edge
+            Circle topEdge = initialTile.circles[0];
+            Circle bottomEdge = initialTile.circles[2];
+           
+           
+            (double, double) reflPoint1 = GeomUtils.InvertPoint(initialTile.points[2], topEdge);
+            (double, double) reflPoint2 = GeomUtils.InvertPoint(initialTile.points[3], topEdge);
+            (double, double) newCenter = GeomUtils.InvertPoint(bottomEdge.centerPoint, topEdge);
+            double newR = GeomUtils.Distance(newCenter, reflPoint1);
+            var newCircle = new Circle(newR, newCenter);
+           
+            DrawPoint(g, Color.Aquamarine, reflPoint1);
+            DrawPoint(g, Color.Aquamarine, reflPoint2);
+            
+            g.DrawEllipse(Pens.Aquamarine, newCircle.GetRectangle());
+           
+           
+           
+           //reflect the left edge into the top edge (this doesn't work)
+
+           int leftEdge = 1;
+           
+
+           // newCenter = GeomUtils.InvertPoint(initialTile.circles[leftEdge].centerPoint, topEdge);
+           // newR = GeomUtils.Distance(newCenter, reflPoint1);
+           // newCircle = new Circle(newR, newCenter);
+           //
+           // g.DrawEllipse(Pens.Aquamarine, newCircle.GetRectangle());
+           
+           //try to reflect any point of that circle, maybe that'll work
+
+           var leftEdgeStartAngle = initialTile.angles[leftEdge].Item1;
+           var leftEdgeDiffAngle = initialTile.angles[leftEdge].Item2;
+
+           double r = initialTile.circles[leftEdge].r;
+           (double, double) center = initialTile.circles[leftEdge].centerPoint;
+
+           var startAngle = initialTile.angles[leftEdge].Item1;
+           var diffAngle = initialTile.angles[leftEdge].Item3;
+
+           var midAngleDegrees = startAngle + (diffAngle / 2);
+
+           var midAngleRad = (Math.PI / 180) * midAngleDegrees;
+
+           var midPoint = GeomUtils.AddPoints(center, (r * Math.Cos(midAngleRad), r * Math.Sin(midAngleRad)));
+
+           var invertMidPoint = GeomUtils.InvertPoint(midPoint, topEdge);
+           
+           DrawPoint(g, Color.Aquamarine, invertMidPoint);
+           
+           //check if midpoints is correct
+
+           //the 3 relevant points
+           
+           DrawPoint(g, Color.Aquamarine, reflPoint1);
+           DrawPoint(g, Color.Aquamarine, invertMidPoint);
+           DrawPoint(g, Color.Aquamarine, initialTile.points[1]);
+
+           Circle resultingCircle = GeomUtils.CircleFromThreePoints(reflPoint1, invertMidPoint, initialTile.points[1]);
+           g.DrawEllipse(Pens.Aquamarine, resultingCircle.GetRectangle());
+
+
+
 
         }
 
@@ -79,14 +144,23 @@ namespace research_project
             for (int i = 0; i < t.circles.Count; i++)
             {
                 float startAngle = t.angles[i].Item1;
-                float diffAngle = t.angles[i].Item2;
+                float diffAngle = t.angles[i].Item3;
                 g.DrawArc(Pens.Red, t.circles[i].GetRectangle(), startAngle, diffAngle);
             }
         }
 
-        private void DrawPoint(Graphics g, Point p)
+        private void DrawTileCircles(Graphics g, Tile t)
         {
-            g.FillRectangle(Brushes.Red, p.X, p.Y, 1, 1);
+            for (int i = 0; i < t.circles.Count; i++)
+            {
+                g.DrawEllipse(Pens.Red, t.circles[i].GetRectangle());
+            }
+        }
+
+        private void DrawPoint(Graphics g, Color c, (double, double) point)
+        {
+            Point p = new Point((int)Math.Round(point.Item1), (int)Math.Round(point.Item2));
+            g.FillRectangle(new SolidBrush(c), p.X, p.Y, 5, 5);
         }
         
         

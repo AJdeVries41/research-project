@@ -62,7 +62,7 @@ namespace research_project
             int j = 1;
             for (int i = 0; i < inits.Count; i++)
             {
-                (double, double) inversion = GeomUtils.InvertPoint(inits[i], unitCircle.centerPoint, unitCircle.r);
+                (double, double) inversion = GeomUtils.InvertPoint(inits[i], unitCircle);
                 Circle connectingCircle = GeomUtils.CircleFromThreePoints(inversion, inits[i], inits[j]);
                 circles.Add(connectingCircle);
                 j++;

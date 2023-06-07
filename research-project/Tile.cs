@@ -12,17 +12,19 @@ namespace research_project
         //etc..
         public List<(double, double)> points;
         public List<Circle> circles;
-        public List<(float, float)> angles;
+        //angles saves startAngle, endAngle, diffAngle
+        public List<(float, float, float)> angles;
         
 
         public Tile(List<(double, double)> points, List<Circle> circles)
         {
             this.points = points;
             this.circles = circles;
-            this.angles = new List<(float, float)>();
+            this.angles = new List<(float, float, float)>();
+            this.SetAngles();
         }
 
-        public void ComputeTile()
+        public void SetAngles()
         {
             //Draw the initial tile, based on the initial points
             //for each pair of adjacent points, draw an arc counterclockwise from inits[j] to inits[i]
@@ -46,9 +48,10 @@ namespace research_project
                 //we can now assume that destAngle is necessarily larger than startAngle
                 var diffAngle = destAngle - startAngle;
                 float degreeStartAngle = (float) ((180/Math.PI) * startAngle);
+                float degreeDestAngle = (float)((180 / Math.PI) * destAngle);
                 float degreeDiffAngle = (float) ((180 / Math.PI) * diffAngle);
                 
-                this.angles.Add((degreeStartAngle, degreeDiffAngle));
+                this.angles.Add((degreeStartAngle, degreeDestAngle, degreeDiffAngle));
 
                 //g.DrawArc(Pens.Red, circles[i].GetRectangle(), degreeStartAngle, degreeDiffAngle);
                 

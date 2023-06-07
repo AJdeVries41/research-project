@@ -10,6 +10,11 @@ namespace research_project
             var yDiff = p1.Item2 - p2.Item2;
             return Math.Sqrt(Math.Pow(xDiff, 2) + Math.Pow(yDiff, 2));
         }
+
+        public static (double, double) AddPoints((double, double) p1, (double, double) p2)
+        {
+            return (p1.Item1 + p2.Item1, p1.Item2 + p2.Item2);
+        }
         
         //Converts an angle like -PI/4 to 7*PI/4
         //Positive angles remain the same
@@ -25,13 +30,14 @@ namespace research_project
         
         //see https://www.malinc.se/noneuclidean/en/circleinversion.php
         //Takes a point inside a circle and returns a point outside of the circle
-        public static (double, double) InvertPoint((double, double) point, (double, double) center, double r)
+        public static (double, double) InvertPoint((double, double) point, Circle c)
         {
             
             double x = point.Item1;
             double y = point.Item2;
-            double centerX = center.Item1;
-            double centerY = center.Item2;
+            double centerX = c.centerPoint.Item1;
+            double centerY = c.centerPoint.Item2;
+            double r = c.r;
             
             double EPSILON = 0.000001;
 
