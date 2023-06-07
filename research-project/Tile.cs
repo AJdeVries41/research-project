@@ -62,6 +62,45 @@ namespace research_project
                 }
             }
         }
+
+        //reflect the edges circles[a] into circles[b]
+        //returns the circle representing the new edge
+        public Circle ReflectIntoEdge(int a, int b)
+        {
+            //We want to create 3 points such that we can return a circle that represents that an
+            //edge was reflected into the b edge
+            //to do this, we take 3 points of this edge, namely points[a], points[a+1] and the midpoint
+            //and reflect all those into the b edge
+            double rA = circles[a].r;
+            (double, double) cA = circles[a].centerPoint;
+
+            Circle reflectInto = circles[b];
+
+            var startAngle = angles[a].Item1;
+            var diffAngle = angles[a].Item3;
+
+            var midAngleDegrees = startAngle + (diffAngle / 2);
+            var midAngleRad = (Math.PI / 180) * midAngleDegrees;
+            
+            var midPoint = GeomUtils.AddPoints(cA, (rA * Math.Cos(midAngleRad), rA * Math.Sin(midAngleRad)));
+
+            (double, double) reflectedPoint1 = GeomUtils.InvertPoint(points[a], reflectInto);
+            (double, double) reflectedPoint2;
+            //if at last edge, the next point is 0 and not IndexOutOfBounds
+            if (a == points.Count - 1)
+            {
+                reflectedPoint2 = GeomUtils.InvertPoint(points[0], reflectInto);
+            }
+            else
+            {
+                reflectedPoint2 = GeomUtils.InvertPoint(points[a + 1], reflectInto);
+            }
+            (double, double) reflectedPoint3 = GeomUtils.InvertPoint(midPoint, reflectInto);
+
+            var resultingCircle = GeomUtils.CircleFromThreePoints(reflectedPoint1, reflectedPoint2, reflectedPoint3);
+            return resultingCircle;
+
+        }
         
         
     }
