@@ -123,22 +123,15 @@ namespace research_project
            // Circle resultingCircle = GeomUtils.CircleFromThreePoints(reflPoint1, invertMidPoint, initialTile.points[1]);
            // g.DrawEllipse(Pens.Aquamarine, resultingCircle.GetRectangle());
            
+           
+           
            //reflect left edge into top edge
 
-           Circle result1 = initialTile.ReflectIntoEdge(1, 0);
-           
-           g.DrawEllipse(Pens.Aquamarine, result1.GetRectangle());
 
-           Circle result2 = initialTile.ReflectIntoEdge(2, 0);
-           Circle result3 = initialTile.ReflectIntoEdge(3, 0);
-           
-           g.DrawEllipse(Pens.Aquamarine, result2.GetRectangle());
-           g.DrawEllipse(Pens.Aquamarine, result3.GetRectangle());
-           
            //for each edge, reflect into this edge
            for (int i = 0; i < t.p; i++)
            {
-               var cs = new List<Circle>();
+               var gs = new List<Geodesic>();
                for (int j = 0; j < t.p; j++)
                {
                    if (i == j)
@@ -146,13 +139,13 @@ namespace research_project
                        continue;
                    }
 
-                   Circle result = initialTile.ReflectIntoEdge(j, i);
-                   cs.Add(result);
+                   Geodesic result = initialTile.ReflectIntoEdge(j, i);
+                   gs.Add(result);
                }
 
-               foreach (var c in cs)
+               foreach (var geo in gs)
                {
-                   g.DrawEllipse(Pens.Aquamarine, c.GetRectangle());
+                   g.DrawArc(Pens.Aquamarine, geo.c.GetRectangle(), geo.startAngle, geo.diffAngle);
                }
            }
 

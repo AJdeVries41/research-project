@@ -15,6 +15,18 @@ namespace research_project
         {
             return (p1.Item1 + p2.Item1, p1.Item2 + p2.Item2);
         }
+
+        //Convert a point on the circle c to the relative angle phi from that centerpoint
+        //Returns an angle [0, 2*pi]
+        public static double ConvertToPolar(Circle c, (double, double) p)
+        {
+            var cX = c.centerPoint.Item1;
+            var cY = c.centerPoint.Item2;
+            var pX = p.Item1;
+            var pY = p.Item2;
+            var phi = Math.Atan2(pY - cY, pX - cX);
+            return AngleConverter(phi);
+        }
         
         //Converts an angle like -PI/4 to 7*PI/4
         //Positive angles remain the same

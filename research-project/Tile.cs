@@ -41,6 +41,7 @@ namespace research_project
 
                 var startAngle = GeomUtils.AngleConverter(Math.Atan2(startY - circleCentreY, startX - circleCentreX));
                 var destAngle = GeomUtils.AngleConverter(Math.Atan2(destY - circleCentreY, destX - circleCentreX));
+                //like if startAngle is 7*pi/6 and destAngle is pi/4 (you cross over the 2*pi part)
                 if (destAngle < startAngle)
                 {
                     destAngle += 2 * Math.PI;
@@ -63,9 +64,9 @@ namespace research_project
             }
         }
 
-        //reflect the edges circles[a] into circles[b]
-        //returns the circle representing the new edge
-        public Circle ReflectIntoEdge(int a, int b)
+        //reflect the edge circles[a] into circles[b]
+        //returns the geodesic representing the new edge
+        public Geodesic ReflectIntoEdge(int a, int b)
         {
             //We want to create 3 points such that we can return a circle that represents that an
             //edge was reflected into the b edge
@@ -76,10 +77,10 @@ namespace research_project
 
             Circle reflectInto = circles[b];
 
-            var startAngle = angles[a].Item1;
-            var diffAngle = angles[a].Item3;
+            var startAngleOrig = angles[a].Item1;
+            var diffAngleOrig = angles[a].Item3;
 
-            var midAngleDegrees = startAngle + (diffAngle / 2);
+            var midAngleDegrees = startAngleOrig + (diffAngleOrig / 2);
             var midAngleRad = (Math.PI / 180) * midAngleDegrees;
             
             var midPoint = GeomUtils.AddPoints(cA, (rA * Math.Cos(midAngleRad), rA * Math.Sin(midAngleRad)));
@@ -98,7 +99,30 @@ namespace research_project
             (double, double) reflectedPoint3 = GeomUtils.InvertPoint(midPoint, reflectInto);
 
             var resultingCircle = GeomUtils.CircleFromThreePoints(reflectedPoint1, reflectedPoint2, reflectedPoint3);
-            return resultingCircle;
+
+            var angle1 = GeomUtils.ConvertToPolar(resultingCircle, reflectedPoint1);
+            var angle2 = GeomUtils.ConvertToPolar(resultingCircle, reflectedPoint2);
+            
+            //always draw from the lower angle
+            var fromAngle = Math.Min(angle1, angle2);
+            var toAngle = Math.Max(angle1, angle2);
+            double diffAngle;
+            if ((toAngle - fromAngle) > Math.PI)
+            {
+                (fromAngle, toAngle) = (toAngle, fromAngle);
+                diffAngle = (toAngle + 2 * Math.PI) - fromAngle;
+            }
+            else
+            {
+                diffAngle = toAngle - fromAngle;
+            }
+
+            var fromAngleDegree = (float) ((180 / Math.PI) * fromAngle);
+            var diffAngleDegree = (float) ((180 / Math.PI) * diffAngle);
+
+            Geodesic res = new Geodesic(resultingCircle, fromAngleDegree, diffAngleDegree);
+            
+            return res;
 
         }
         
