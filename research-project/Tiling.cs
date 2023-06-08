@@ -43,39 +43,37 @@ namespace research_project
         }
 
         //Generates a tiling by continuously adding new Tile objects to the tile list
-        public void GenerateTiling(Graphics g)
+        public void GenerateTiling()
         {
-            Tile current = new Tile(this.initialPoints, this.initialCircles);
-            this.tiles.Add(current);
+            //First generate the initial tile
+            Tile initial = new Tile(this.initialPoints, this.initialCircles);
+            this.tiles.Add(initial);
 
-            int NUM_ITERATIONS = 4;
-
+            Queue<Tile> q = new Queue<Tile>();
             
-            for (int i = 0; i < current.edges.Count; i++)
+            q.Enqueue(initial);
+
+            int NUM_ITERATIONS = 40;
+            int iterationCount = 0;
+
+            while (q.Count != 0 && iterationCount < NUM_ITERATIONS)
             {
-                List<Geodesic> newEdges = new List<Geodesic>();
-                //reflect all edges[j] into edges[i]
-                for (int j = 0; j < current.edges.Count; j++)
+                Tile current = q.Dequeue();
+                //Reflect the current tile into each of its edges
+                for (int i = 0; i < current.edges.Count; i++)
                 {
-                    if (j == i)
-                    {
-                        continue;
-                    }
-
-                    Geodesic reflection = Geodesic.ReflectIntoEdge(current.edges[j], current.edges[i]);
-                    newEdges.Add(reflection);
+                    Tile reflectedTile = current.ReflectIntoEdge(i);
+                    q.Enqueue(reflectedTile);
+                    this.tiles.Add(reflectedTile);
                 }
-                Tile newTile = new Tile(newEdges);
-                this.tiles.Add(newTile);
+                iterationCount++;
             }
-            
-            
         }
         
         public void DrawTiling(Graphics g)
         {
             //Draw unit circle
-            g.DrawEllipse(Pens.Purple, this.unitCircle.GetRectangle());
+            g.DrawEllipse(Pens.Red, this.unitCircle.GetRectangle());
             foreach (var tile in this.tiles)
             {
                 tile.Draw(g);

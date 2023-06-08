@@ -23,13 +23,8 @@ namespace research_project
             this.c = c;
             this.ComputeAngles(point1, point2);
         }
-
-        public void Draw(Graphics g)
-        {
-            g.DrawArc(Pens.Aquamarine, this.c.GetRectangle(), this.startAngleDegree, this.diffAngleDegree);
-        }
-
-        //Compute which part of the geodesic should be drawn based on two points that are on the circle
+        
+        //Compute which part of the circle should be drawn based on two points that are on the circle
         private void ComputeAngles((double, double) point1, (double, double) point2)
         {
             var cX = this.c.centerPoint.Item1;
@@ -56,20 +51,25 @@ namespace research_project
             this.startAngleDegree = startAngleDegree;
             this.diffAngleDegree = diffAngleDegree;
         }
-        
-        //reflect the edge a into edge b
+
+        public void Draw(Graphics g)
+        {
+            g.DrawArc(Pens.Orange, this.c.GetRectangle(), this.startAngleDegree, this.diffAngleDegree);
+        }
+
+        //reflect this edge into edge b
         //returns the geodesic representing the new edge
-        public static Geodesic ReflectIntoEdge(Geodesic a, Geodesic b)
+        public Geodesic ReflectIntoEdge(Geodesic b)
         {
             //We want to create 3 points such that we can return a circle that represents that an
             //edge was reflected into the b edge
             //to do this, we take 3 points of this edge, namely points[a], points[a+1] and the midpoint
             //and reflect all those into the b edge
 
-            Circle c = a.c;
-            double startAngleRad = (Math.PI / 180) * a.startAngleDegree;
-            double midAngleRad = (Math.PI / 180) * (a.startAngleDegree + (a.diffAngleDegree / 2));
-            double endAngleRad = (Math.PI / 180) * (a.startAngleDegree + a.diffAngleDegree);
+            Circle c = this.c;
+            double startAngleRad = (Math.PI / 180) * this.startAngleDegree;
+            double midAngleRad = (Math.PI / 180) * (this.startAngleDegree + (this.diffAngleDegree / 2));
+            double endAngleRad = (Math.PI / 180) * (this.startAngleDegree + this.diffAngleDegree);
 
             (double, double) startPoint = GeomUtils.ConvertFromPolar(c, startAngleRad);
             (double, double) midPoint = GeomUtils.ConvertFromPolar(c, midAngleRad);

@@ -56,7 +56,7 @@ namespace research_project
             
             Tiling t = new Tiling(4, 5, lesserScreenSize, Math.PI/4);
             
-            t.GenerateTiling(g);
+            t.GenerateTiling();
             
             t.DrawTiling(g);
 

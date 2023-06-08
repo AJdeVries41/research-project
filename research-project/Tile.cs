@@ -52,6 +52,27 @@ namespace research_project
             }
         }
 
+        public Tile ReflectIntoEdge(int i)
+        {
+            var reflectInto = this.edges[i];
+            var newEdges = new List<Geodesic>();
+            //reflect all edges[j] into edges[i]
+            for (int j = 0; j < this.edges.Count; j++)
+            {
+                if (j == i)
+                {
+                    newEdges.Add(reflectInto);
+                }
+                else
+                {
+                    Geodesic reflection = this.edges[j].ReflectIntoEdge(reflectInto);
+                    newEdges.Add(reflection);
+                }
+            }
+            Tile newTile = new Tile(newEdges);
+            return newTile;
+        }
+
 
 
     }
