@@ -104,9 +104,7 @@ namespace research_project
             var diffAngleDegree = (float) ((180 / Math.PI) * diffAngle);
 
             Geodesic res = new Geodesic(resultingCircle, fromAngleDegree, diffAngleDegree);
-
             return res;
-
         }
 
         public override string ToString()

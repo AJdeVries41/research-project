@@ -2,9 +2,14 @@
 {
     public enum Step
     {
-        Forward,
-        Left,
-        Right
+        //Forward
+        F,
+        //Left
+        L,
+        //Right
+        R,
+        //Don't care (this happens when you generate the initial layer of new tiles, since those don't use steps yet)
+        DC
     }
     
 }

@@ -104,7 +104,6 @@ namespace research_project
             double e = p3.Item1;
             double f = p3.Item2;
             
-            
             double a1 = -2 * c + 2 * a;
             double b1 = -2 * d + 2 * b;
             double c1 = Math.Pow(a, 2) + Math.Pow(b, 2) - Math.Pow(c, 2) - Math.Pow(d, 2);
@@ -124,9 +123,7 @@ namespace research_project
 
             double centerX = (c1 * b2 - b1 * c2) / (a1 * b2 - b1 * a2);
             double centerY = (a1 * c2 - c1 * a2) / (a1 * b2 - b1 * a2);
-
             
-
             //calculate r using any equation, e.g. the first
             double r = Math.Sqrt(Math.Pow(a - centerX, 2) + Math.Pow(b - centerY, 2));
 

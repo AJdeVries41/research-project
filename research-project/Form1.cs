@@ -56,9 +56,8 @@ namespace research_project
             
             Tiling t = new Tiling(4, 5, lesserScreenSize, Math.PI/4);
             
-            t.GenerateTiling();;
-
-            Tile originTile = t.knownTiles[0];
+            t.GenerateTiling();
+            
 
             // for (int i = 0; i < 1000; i++)
             // {
