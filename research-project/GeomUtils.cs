@@ -4,6 +4,16 @@ namespace research_project
 {
     public class GeomUtils
     {
+
+        public static bool NearlyEqual(double d1, double d2)
+        {
+            if (d1 == d2)
+            {
+                return true;
+            }
+            var epsilon = 0.0001;
+            return Math.Abs(d1 - d2) <= epsilon;
+        }
         public static double Distance((double, double) p1, (double, double) p2)
         {
             var xDiff = p1.Item1 - p2.Item1;

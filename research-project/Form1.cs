@@ -21,7 +21,7 @@ namespace research_project
         
         private void Form1_Load(object sender, EventArgs e)
         {
-            AllocConsole();
+            //AllocConsole();
         }
         
         //This is to be able to use the console while running the application
@@ -56,8 +56,15 @@ namespace research_project
             
             Tiling t = new Tiling(4, 5, lesserScreenSize, Math.PI/4);
             
-            t.GenerateTiling();
-            
+            t.GenerateTiling();;
+
+            Tile originTile = t.knownTiles[0];
+
+            // for (int i = 0; i < 1000; i++)
+            // {
+            //     originTile.Draw(g);
+            // }
+
             t.DrawTiling(g);
 
         }

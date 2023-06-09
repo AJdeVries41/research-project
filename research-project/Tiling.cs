@@ -14,7 +14,7 @@ namespace research_project
 
         public List<(double, double)> initialPoints;
         public List<Circle> initialCircles;
-        public List<Tile> tiles;
+        public List<Tile> knownTiles;
         
 
         // Saves all relevant info for the tiling
@@ -38,33 +38,34 @@ namespace research_project
             this.initialPoints = this.InitialVertices();
             this.initialCircles = this.InitialCircles();
 
-            this.tiles = new List<Tile>();
+            this.knownTiles = new List<Tile>();
 
         }
 
         //Generates a tiling by continuously adding new Tile objects to the tile list
         public void GenerateTiling()
         {
+            int NUM_ITERATIONS = 400;
+            int iterationCount = 0;
+            
             //First generate the initial tile
             Tile initial = new Tile(this.initialPoints, this.initialCircles);
-            this.tiles.Add(initial);
-
+            this.knownTiles.Add(initial);
             Queue<Tile> q = new Queue<Tile>();
-            
             q.Enqueue(initial);
-
-            int NUM_ITERATIONS = 40;
-            int iterationCount = 0;
 
             while (q.Count != 0 && iterationCount < NUM_ITERATIONS)
             {
                 Tile current = q.Dequeue();
-                //Reflect the current tile into each of its edges
-                for (int i = 0; i < current.edges.Count; i++)
+                //Reflect the current tile into each of its edges (i.e. neighbours)
+                for (int i = 0; i < current.edges.Length; i++)
                 {
-                    Tile reflectedTile = current.ReflectIntoEdge(i);
-                    q.Enqueue(reflectedTile);
-                    this.tiles.Add(reflectedTile);
+                    Tile reflectedTile = current.ReflectIntoEdge(current.edges[i]);
+                    if (!this.knownTiles.Contains(reflectedTile))
+                    {
+                        this.knownTiles.Add(reflectedTile);
+                        q.Enqueue(reflectedTile);
+                    }
                 }
                 iterationCount++;
             }
@@ -74,7 +75,8 @@ namespace research_project
         {
             //Draw unit circle
             g.DrawEllipse(Pens.Red, this.unitCircle.GetRectangle());
-            foreach (var tile in this.tiles)
+            //Draw each known tile
+            foreach (var tile in this.knownTiles)
             {
                 tile.Draw(g);
             }

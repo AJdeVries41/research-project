@@ -4,7 +4,7 @@ using System.Dynamic;
 
 namespace research_project
 {
-    public class Geodesic
+    public class Geodesic : IEquatable<Geodesic>
     {
         public Circle c;
         public float startAngleDegree;
@@ -108,6 +108,37 @@ namespace research_project
             return res;
 
         }
-        
+
+        public override string ToString()
+        {
+            return $"{nameof(c)}: {c}, {nameof(startAngleDegree)}: {startAngleDegree}, {nameof(diffAngleDegree)}: {diffAngleDegree}";
+        }
+
+
+        public bool Equals(Geodesic other)
+        {
+            return Equals(c, other.c)
+                   && GeomUtils.NearlyEqual(this.startAngleDegree, other.startAngleDegree)
+                   && GeomUtils.NearlyEqual(this.diffAngleDegree, other.diffAngleDegree);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Geodesic)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (c != null ? c.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ startAngleDegree.GetHashCode();
+                hashCode = (hashCode * 397) ^ diffAngleDegree.GetHashCode();
+                return hashCode;
+            }
+        }
     }
 }

@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace research_project
 {
-    public class Tile
+    public class Tile : IEquatable<Tile>
     {
-        public List<Geodesic> edges;
+        //public List<Geodesic> edges;
+        public Geodesic[] edges;
         
         //Constructor for a general tile
-        public Tile(List<Geodesic> edges)
+        public Tile(Geodesic[] edges)
         {
             this.edges = edges;
         }
@@ -17,7 +19,8 @@ namespace research_project
         //Constructor for the initial tile
         public Tile(List<(double, double)> points, List<Circle> circles)
         {
-            this.edges = new List<Geodesic>();
+            //if there are p points that also means a polygon has p sides
+            this.edges = new Geodesic[points.Count];
             ConstructInitialEdges(points, circles);
         }
 
@@ -41,7 +44,7 @@ namespace research_project
                 var dest = points[i];
 
                 Geodesic edge = new Geodesic(c, start, dest);
-                this.edges.Add(edge);
+                this.edges[i] = edge;
                 
                 j++;
                 if (j == points.Count)
@@ -52,28 +55,71 @@ namespace research_project
             }
         }
 
-        public Tile ReflectIntoEdge(int i)
+        public Tile ReflectIntoEdge(Geodesic reflectInto)
         {
-            var reflectInto = this.edges[i];
-            var newEdges = new List<Geodesic>();
+            var newEdges = new Geodesic[this.edges.Length];
             //reflect all edges[j] into edges[i]
-            for (int j = 0; j < this.edges.Count; j++)
+            for (int j = 0; j < this.edges.Length; j++)
             {
-                if (j == i)
-                {
-                    newEdges.Add(reflectInto);
-                }
-                else
-                {
-                    Geodesic reflection = this.edges[j].ReflectIntoEdge(reflectInto);
-                    newEdges.Add(reflection);
-                }
+                Geodesic reflection = this.edges[j].ReflectIntoEdge(reflectInto);
+                newEdges[j] = reflection;
             }
             Tile newTile = new Tile(newEdges);
             return newTile;
         }
 
+        public override string ToString()
+        {
+            String res = "";
+            foreach (var edge in this.edges)
+            {
+                res += $"Geodesic<{edge.ToString()}>,";
+            }
 
+            if (res.Length != 0)
+            {
+                res.Remove(res.Length - 1);
+            }
 
+            return res;
+        }
+
+        public bool Equals(Tile other)
+        {
+            bool equalSize = this.edges.Length == other.edges.Length;
+            //I have no clue why this doesn't work the expected way
+            //Why are the lists equal, but the set difference is not empty?
+            //bool equalDifferentOrder = !this.edges.Except(other.edges).Any();
+            
+            //bool equalElements = this.edges.SequenceEqual(other.edges);
+            //return equalElements;
+
+            return this.EqualsDifferentOrder(other);
+        }
+
+        public bool EqualsDifferentOrder(Tile other)
+        {
+            foreach (var geo in other.edges)
+            {
+                if (!this.edges.Contains(geo))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Tile)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (edges != null ? edges.GetHashCode() : 0);
+        }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Configuration;
 using System.Drawing;
 
 namespace research_project
 {
-    public class Circle
+    public class Circle : IEquatable<Circle>
     {
         public double r { get; }
         public (double, double) centerPoint { get; }
@@ -29,6 +30,32 @@ namespace research_project
             return boundingRectangle;
         }
 
+        public bool Equals(Circle other)
+        {
+            return GeomUtils.NearlyEqual(this.r, other.r)
+                   && GeomUtils.NearlyEqual(this.centerPoint.Item1, other.centerPoint.Item1)
+                   && GeomUtils.NearlyEqual(this.centerPoint.Item2, other.centerPoint.Item2);
+        }
 
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Circle)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (r.GetHashCode() * 397) ^ centerPoint.GetHashCode();
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(r)}: {r}, {nameof(centerPoint)}: {centerPoint}";
+        }
     }
 }
