@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Windows.Forms.VisualStyles;
 
 namespace research_project
 {
@@ -42,10 +44,22 @@ namespace research_project
 
         }
 
+        public String TileSideToString(TileSide s)
+        {
+            return s.ToString().Substring(0, 1);
+        }
+
+        public String StepToString(Step s)
+        {
+            return s.ToString().Substring(0, 1);
+        }
+
         //Generates a tiling by continuously adding new Tile objects to the tile list
         public void GenerateTiling()
         {
-            int NUM_ITERATIONS = 400;
+            TileSide[] sides = { TileSide.North, TileSide.West, TileSide.South, TileSide.East };
+            Step[] steps = { Step.Forward, Step.Left, Step.Right };
+            int NUM_ITERATIONS = 200;
             int iterationCount = 0;
             
             //First generate the initial tile
@@ -53,22 +67,112 @@ namespace research_project
             this.knownTiles.Add(initial);
             Queue<Tile> q = new Queue<Tile>();
             q.Enqueue(initial);
-
-            while (q.Count != 0 && iterationCount < NUM_ITERATIONS)
+            
+            //Then generate the first layer of new tiles, which is unique because we generate in all 4 directions
+            if (this.p == 4 && this.q == 5)
             {
-                Tile current = q.Dequeue();
-                //Reflect the current tile into each of its edges (i.e. neighbours)
-                for (int i = 0; i < current.edges.Length; i++)
+                initial = q.Dequeue();
+                foreach (var side in sides)
                 {
-                    Tile reflectedTile = current.ReflectIntoEdge(current.edges[i]);
-                    if (!this.knownTiles.Contains(reflectedTile))
+                    String newPath = TileSideToString(side);
+                    Tile reflectedTile = initial.ReflectIntoSide(side, newPath);
+                    reflectedTile.path = TileSideToString(side);
+                    this.knownTiles.Add(reflectedTile);
+                    q.Enqueue(reflectedTile);
+                }
+                //Now we somehow have to generate only Forward, Left and Right tiles iff that is allowed according to the underlying graph
+
+                while (q.Count != 0 && iterationCount < NUM_ITERATIONS)
+                {
+                    Tile current = q.Dequeue();
+                    TileSide currentForwardDir = current.currentForwardDirection;
+                    //Reflect the tile into each of the "Steps" which are currently allowed
+                    foreach (var step in steps)
                     {
+                        if (!current.isStepLegal(step))
+                        {
+                            continue;
+                        }
+                        TileSide reflectIn = StepToTileSide(step, currentForwardDir);
+                        String newPath = current.path + StepToString(step);
+                        Tile reflectedTile = current.ReflectIntoSide(reflectIn, newPath);
                         this.knownTiles.Add(reflectedTile);
                         q.Enqueue(reflectedTile);
                     }
+                    iterationCount++;
                 }
-                iterationCount++;
             }
+            else
+            {
+                while (q.Count != 0 && iterationCount < NUM_ITERATIONS)
+                {
+                    Tile current = q.Dequeue();
+                    for (int i = 0; i < current.edges.Length; i++)
+                    {
+                        Tile reflectedTile = current.ReflectIntoEdge(current.edges[i]);
+                        if (!this.knownTiles.Contains(reflectedTile))
+                        {
+                            this.knownTiles.Add(reflectedTile);
+                            q.Enqueue(reflectedTile);
+                        }
+                    }
+                    iterationCount++;
+                }
+            }
+        }
+        
+        public static TileSide StepToTileSide(Step s, TileSide currentForwardDirection)
+        {
+            switch (currentForwardDirection)
+            {
+                case TileSide.North:
+                    switch (s)
+                    {
+                        case Step.Forward:
+                            return TileSide.North;
+                        case Step.Left:
+                            return TileSide.West;
+                        case Step.Right:
+                            return TileSide.East;
+                    }
+                    break;
+                case TileSide.West:
+                    switch (s)
+                    {
+                        case Step.Forward:
+                            return TileSide.West;
+                        case Step.Left:
+                            return TileSide.South;
+                        case Step.Right:
+                            return TileSide.North;
+                    }
+
+                    break;
+                case TileSide.South:
+                    switch (s)
+                    {
+                        case Step.Forward:
+                            return TileSide.South;
+                        case Step.Left:
+                            return TileSide.East;
+                        case Step.Right:
+                            return TileSide.West;
+                    }
+                    break;
+                case TileSide.East:
+                    switch (s)
+                    {
+                        case Step.Forward:
+                            return TileSide.East;
+                        case Step.Left:
+                            return TileSide.North;
+                        case Step.Right:
+                            return TileSide.South;
+                    }
+                    break;
+            }
+            //this never happens
+            return TileSide.East;
         }
         
         public void DrawTiling(Graphics g)
