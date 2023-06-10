@@ -22,6 +22,7 @@ namespace research_project
         private void Form1_Load(object sender, EventArgs e)
         {
             AllocConsole();
+            this.ResizeRedraw = true;
         }
         
         //This is to be able to use the console while running the application
