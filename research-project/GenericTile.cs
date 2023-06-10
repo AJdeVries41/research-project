@@ -81,7 +81,7 @@ namespace research_project
             String res = "";
             foreach (var edge in this.edges)
             {
-                res += $"Geodesic<{edge.ToString()}>,";
+                res += edge.ToString();
             }
 
             if (res.Length != 0)

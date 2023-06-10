@@ -54,7 +54,18 @@ namespace research_project
 
         public void Draw(Graphics g)
         {
-            g.DrawArc(Pens.Orange, this.c.GetRectangle(), this.startAngleDegree, this.diffAngleDegree);
+            try
+            {
+                g.DrawArc(Pens.Orange, this.c.GetRectangle(), this.startAngleDegree, this.diffAngleDegree);
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine($"Got argument exception when trying to draw {this.ToString()}");
+                //Don't draw this arc (this occurs seemingly at random, and I don't really know why)
+                //Though I suppose it could have to do with drawing really small stuff near the border of the unit circle
+                return;
+            }
+            
         }
 
         //reflect this edge into edge b
@@ -109,7 +120,7 @@ namespace research_project
 
         public override string ToString()
         {
-            return $"{nameof(c)}: {c}, {nameof(startAngleDegree)}: {startAngleDegree}, {nameof(diffAngleDegree)}: {diffAngleDegree}";
+            return $"Geodesic<{nameof(c)}: {c}, {nameof(startAngleDegree)}: {startAngleDegree}, {nameof(diffAngleDegree)}: {diffAngleDegree}>";
         }
 
 

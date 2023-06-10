@@ -59,12 +59,6 @@ namespace research_project
             
             t.GenerateTiling();
             
-
-            // for (int i = 0; i < 1000; i++)
-            // {
-            //     originTile.Draw(g);
-            // }
-
             t.DrawTiling(g);
 
         }

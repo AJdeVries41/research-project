@@ -104,9 +104,11 @@ namespace research_project
         public void GenerateGenericTiling()
         {
             Queue<GenericTile> q = new Queue<GenericTile>();
-            int NUM_ITERATIONS = 200;
+            int NUM_ITERATIONS = 400;
             int iterationCount = 0;
             GenericTile initial = new GenericTile(this.initialPoints, this.initialCircles);
+            this.knownTiles.Add(initial);
+            q.Enqueue(initial);
             while (q.Count != 0 && iterationCount < NUM_ITERATIONS)
             {
                 GenericTile current = q.Dequeue();
