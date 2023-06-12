@@ -14,9 +14,9 @@ using System.Runtime.InteropServices;
 
 namespace research_project
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
         }
@@ -54,6 +54,8 @@ namespace research_project
             
             t.GenerateTiling();
             t.FillTiling(g);
+            //t.DrawTiling(g);
+            
             
             // Tiling fiveFour = new Tiling(5, 4, lesserScreenSize, Math.PI/4);
             //

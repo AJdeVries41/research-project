@@ -4,6 +4,11 @@ using System.Dynamic;
 
 namespace research_project
 {
+    /// <summary>
+    /// The class that represents any edge of a tile
+    /// A Geodesic is basically just a part of a circle that should be drawn, limited by the startPoint and endPoint
+    /// which both lie on the circle
+    /// </summary>
     public class Geodesic
     {
         public Circle c;
@@ -12,8 +17,7 @@ namespace research_project
 
         public float startAngleDegree;
         public float sweepAngleDegree;
-
-        //Construct Geodesic based on a circle and two points that lie on that circle
+        
         public Geodesic(Circle c, (double, double) start, (double, double) end)
         {
             this.c = c;

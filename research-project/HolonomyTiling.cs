@@ -1,15 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace research_project
 {
     public class HolonomyTiling : Tiling
     {
-        //public int[,] stepToDirection;
+        //Kind of an arbitrary table, but you should read it as
+        //StepToDirection[currentForwardDirection][step]
+        //which, when cast to a Direction, gives the direction that "step" represents
+        private static readonly int[,] StepToDirection = new int[4, 3] { { 0, 1, 3 }, { 1, 2, 0 }, { 2, 3, 1 }, { 3, 0, 2 } };
 
         public HolonomyTiling(int smallestResolution, double initialRotation) : base(4, 5, smallestResolution,
             initialRotation)
         {
-            //this.stepToDirection = new int[4, 3] { { 0, 1, 3 }, { 1, 2, 0 }, { 2, 3, 1 }, { 3, 0, 2 } };
+            
         }
         
         public override void GenerateTiling()
@@ -56,56 +61,9 @@ namespace research_project
         
         private static Direction ConvertStepToDirection(Step s, Direction currentForwardDirection)
         {
-            switch (currentForwardDirection)
-            {
-                case Direction.N:
-                    switch (s)
-                    {
-                        case Step.F:
-                            return Direction.N;
-                        case Step.L:
-                            return Direction.W;
-                        case Step.R:
-                            return Direction.E;
-                    }
-                    break;
-                case Direction.W:
-                    switch (s)
-                    {
-                        case Step.F:
-                            return Direction.W;
-                        case Step.L:
-                            return Direction.S;
-                        case Step.R:
-                            return Direction.N;
-                    }
-
-                    break;
-                case Direction.S:
-                    switch (s)
-                    {
-                        case Step.F:
-                            return Direction.S;
-                        case Step.L:
-                            return Direction.E;
-                        case Step.R:
-                            return Direction.W;
-                    }
-                    break;
-                case Direction.E:
-                    switch (s)
-                    {
-                        case Step.F:
-                            return Direction.E;
-                        case Step.L:
-                            return Direction.N;
-                        case Step.R:
-                            return Direction.S;
-                    }
-                    break;
-            }
-            //this never happens
-            return Direction.E;
+            int dirInt = Convert.ToInt32(currentForwardDirection);
+            int stepInt = Convert.ToInt32(s);
+            return (Direction) StepToDirection[dirInt, stepInt];
         }
     }
 }

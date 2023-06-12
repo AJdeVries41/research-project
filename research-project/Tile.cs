@@ -31,11 +31,12 @@ namespace research_project
         
         public void DrawBounds(Graphics g)
         {
+            Pen drawingPen = new Pen(Brushes.Black, 3);
             foreach (var geo in this.Edges)
             {
                 if (geo != null)
                 {
-                    g.DrawArc(Pens.Orange,geo.c.GetRectangle(), geo.startAngleDegree, geo.sweepAngleDegree);
+                    g.DrawArc(drawingPen,geo.c.GetRectangle(), geo.startAngleDegree, geo.sweepAngleDegree);
                 }
             }
         }
@@ -48,7 +49,9 @@ namespace research_project
                 gp.AddArc(this.Edges[i].c.GetRectangle(), this.Edges[i].startAngleDegree, this.Edges[i].sweepAngleDegree);
             }
             MD5 md5 = MD5.Create();
-            var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(this.ToString()));
+            var hashCode = this.GetHashCode();
+            var bytes = BitConverter.GetBytes(hashCode);
+            var hash = md5.ComputeHash(bytes);
             var color = Color.FromArgb(hash[0], hash[1], hash[2]);
             Brush b = new SolidBrush(color);
             g.FillRegion(b, new Region(gp));
@@ -56,7 +59,7 @@ namespace research_project
         
         
         
-        public void ConstructInitialEdges(List<(double, double)> points, List<Circle> circles)
+        private void ConstructInitialEdges(List<(double, double)> points, List<Circle> circles)
         {
             int j = 1;
             for (int i = 0; i < points.Count; i++)

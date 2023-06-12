@@ -63,8 +63,6 @@ namespace research_project
         /// <returns></returns>
         public static (double, double) ConvertFromPolar(Circle c, double angle)
         {
-            double cX = c.CenterPoint.Item1;
-            double cY = c.CenterPoint.Item2;
             double r = c.r;
             double centerToX = r * Math.Cos(angle);
             double centerToY = r * Math.Sin(angle);
