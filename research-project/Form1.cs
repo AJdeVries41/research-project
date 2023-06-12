@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,20 +48,58 @@ namespace research_project
             //y-axis.
             //It still kinda makes sense tho, since we still use the point that is "closest" to the origin in all cases.
             //Also, now g.DrawArc draws arcs counterclockwise
-            
-            //X-axis
-            g.DrawLine(Pens.Cyan, new Point(0, 0), new Point(300, 0));
-            
-            //Y-axis
-            g.DrawLine(Pens.Cyan, new Point(0, 0), new Point(0, 300));
-            
+
             var lesserScreenSize = Math.Min(this.ClientSize.Width, this.ClientSize.Height);
+            
             
             Tiling t = new Tiling(4, 5, lesserScreenSize, Math.PI/4);
             
             t.GenerateTiling();
             
             t.DrawTiling(g);
+            //t.FillTiling(g);
+            
+            // TestFillTile(g, t.knownTiles[0]);
+            // TestFillTile(g, t.knownTiles[20]);
+        }
+
+        public void TestFillTile(Graphics g, GenericTile t)
+        {
+            foreach (var geo in t.edges)
+            {
+                geo.Draw(g);
+            }
+
+            GraphicsPath p = new GraphicsPath();
+            
+            p.AddArc(t.edges[3].c.GetRectangle(), t.edges[3].startAngleDegree, t.edges[3].diffAngleDegree);
+            p.AddArc(t.edges[2].c.GetRectangle(), t.edges[2].startAngleDegree, t.edges[2].diffAngleDegree);
+            p.AddArc(t.edges[1].c.GetRectangle(), t.edges[1].startAngleDegree, t.edges[1].diffAngleDegree);
+            p.AddArc(t.edges[0].c.GetRectangle(), t.edges[0].startAngleDegree, t.edges[0].diffAngleDegree);
+
+            g.FillRegion(Brushes.Red, new Region(p));
+        }
+
+        public void TestFillTriangle(Graphics g)
+        {
+            Point a = new Point(0, 0);
+            Point b = new Point(200, 200);
+            Point c = new Point(300, 0);
+
+            //    b
+            //a      c 
+            
+            g.DrawLine(Pens.Black, a, b);
+            g.DrawLine(Pens.Black, b, c);
+            g.DrawLine(Pens.Black, a, c);
+
+            GraphicsPath p = new GraphicsPath();
+            p.AddLine(a, b);
+            p.AddLine(b, c);
+            //p.AddLine(a, c);
+            
+            
+            g.FillRegion(Brushes.Orange, new Region(p));
 
         }
 

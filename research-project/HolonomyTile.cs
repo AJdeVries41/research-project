@@ -19,7 +19,15 @@ namespace research_project
         //Was the last step a right step?
         public bool wasLastStepRight;
         
-        //Constructor for the initial tile
+        /// <summary>
+        /// Constructor for the initial tile
+        /// For a HolonomyTile, it holds that edges[0] = top edge,
+        /// edges[1] = left edge
+        /// edges[2] = bottom edge
+        /// edges[3] = right edge
+        /// </summary>
+        /// <param name="points"></param>
+        /// <param name="circles"></param>
         public HolonomyTile(List<(double, double)> points, List<Circle> circles) : base(points, circles)
         {
             this.CurrentForwardDirection = Direction.O;
@@ -65,11 +73,10 @@ namespace research_project
         }
         
         /// <summary>
-        /// Assumes a {4, 5} tiling
         /// Reflects into any of North, West, South or East directions
         /// </summary>
-        /// <param name="dir"></param>
-        /// <param name="step"></param>
+        /// <param name="dir">direction into which we should reflect (N, W, S, E)</param>
+        /// <param name="step">which step was taken from this tile to get here (F, L, R)</param>
         /// <returns></returns>
         public HolonomyTile ReflectIntoDirection(Direction dir, Step step)
         {
@@ -106,6 +113,11 @@ namespace research_project
                     newEdges[Convert.ToInt32(Direction.E)] = reflWest;
                     break;
             }
+            return ConstructNextTile(newEdges, dir, step);
+        }
+
+        private HolonomyTile ConstructNextTile(Geodesic[] newEdges, Direction dir, Step step)
+        {
             bool hasFirstLeftOccurred;
             bool rightBeforeLeft;
             bool wasLastStepRight;

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace research_project
 {
@@ -22,10 +25,8 @@ namespace research_project
             ConstructInitialEdges(points, circles);
         }
         
-        public void Draw(Graphics g)
+        public void DrawBounds(Graphics g)
         {
-            //For debugging purposes, print the path of this tile. I can't figure out why I keep generating duplicates
-            //Console.WriteLine(this.path);
             foreach (var geo in this.edges)
             {
                 if (geo != null)
@@ -34,6 +35,22 @@ namespace research_project
                 }
             }
         }
+
+        public void FillTile(Graphics g)
+        {
+            GraphicsPath gp = new GraphicsPath();
+            for (int i = this.edges.Length - 1; i >= 0; i--)
+            {
+                gp.AddArc(this.edges[i].c.GetRectangle(), this.edges[i].startAngleDegree, this.edges[i].diffAngleDegree);
+            }
+            MD5 md5 = MD5.Create();
+            var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(this.ToString()));
+            var color = Color.FromArgb(hash[0], hash[1], hash[2]);
+            Brush b = new SolidBrush(color);
+            g.FillRegion(b, new Region(gp));
+        }
+        
+        
         
         public void ConstructInitialEdges(List<(double, double)> points, List<Circle> circles)
         {
@@ -42,7 +59,7 @@ namespace research_project
             {
                 Circle c = circles[i];
                 
-                //we are drawing the circle counterclockwise from the 2nd point to the 1st point
+                //we are drawing the circle counterclockwise from the "end" point to the "start" point
                 var start = points[j];
                 var dest = points[i];
 

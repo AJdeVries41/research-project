@@ -60,27 +60,25 @@ namespace research_project
             }
         }
 
-        public void GenerateHolonomyTiling()
+        private void GenerateHolonomyTiling()
         {
             Direction[] dirs = { Direction.N, Direction.W, Direction.S, Direction.E };
             Step[] steps = { Step.F, Step.L, Step.R };
-            int NUM_ITERATIONS = 200;
-            int iterationCount = 0;
+            int NUM_DESIRED_TILES = 400;
+            int generatedTiles = 0;
             HolonomyTile initial = new HolonomyTile(this.initialPoints, this.initialCircles);
+            this.knownTiles.Add(initial);
             Queue<HolonomyTile> q = new Queue<HolonomyTile>();
-            q.Enqueue(initial);
 
-            //Generate the first layer of new tiles, which is "special"" because we generate in all 4 directions as opposed to just 3, 2 or 1
-            initial = q.Dequeue();
             foreach (var dir in dirs)
             {
                 HolonomyTile reflectedTile = initial.ReflectIntoDirection(dir, Step.DC);
                 q.Enqueue(reflectedTile);
                 this.knownTiles.Add(reflectedTile);
             }
-            //Now we somehow have to generate only Forward, Left and Right tiles iff that is allowed according to the underlying graph
-
-            while (q.Count != 0 && iterationCount < NUM_ITERATIONS)
+            // //Now we somehow have to generate only Forward, Left and Right tiles iff that is allowed according to the underlying graph
+            
+            while (q.Count != 0 && generatedTiles < NUM_DESIRED_TILES)
             {
                 HolonomyTile current = q.Dequeue();
                 Direction currentForwardDir = current.CurrentForwardDirection;
@@ -91,17 +89,19 @@ namespace research_project
                     {
                         continue;
                     }
-                    Direction reflectIn = ConvertStepToDirection(step, currentForwardDir);
-                    HolonomyTile reflectedTile = current.ReflectIntoDirection(reflectIn, step);
-                    this.knownTiles.Add(reflectedTile);
-                    q.Enqueue(reflectedTile);
+                    else
+                    {
+                        Direction reflectIn = ConvertStepToDirection(step, currentForwardDir);
+                        HolonomyTile reflectedTile = current.ReflectIntoDirection(reflectIn, step);
+                        generatedTiles++;
+                        this.knownTiles.Add(reflectedTile);
+                        q.Enqueue(reflectedTile);
+                    }
                 }
-                iterationCount++;
             }
-            
         }
 
-        public void GenerateGenericTiling()
+        private void GenerateGenericTiling()
         {
             Queue<GenericTile> q = new Queue<GenericTile>();
             int NUM_ITERATIONS = 400;
@@ -125,7 +125,7 @@ namespace research_project
             }
         }
 
-        public static Direction ConvertStepToDirection(Step s, Direction currentForwardDirection)
+        private static Direction ConvertStepToDirection(Step s, Direction currentForwardDirection)
         {
             switch (currentForwardDirection)
             {
@@ -186,7 +186,18 @@ namespace research_project
             //Draw each known tile
             foreach (var tile in this.knownTiles)
             {
-                tile.Draw(g);
+                tile.DrawBounds(g);
+                //tile.FillTile(g);
+            }
+        }
+
+        public void FillTiling(Graphics g)
+        {
+            //Draw unit circle
+            g.DrawEllipse(Pens.Red, this.unitCircle.GetRectangle());
+            foreach (var tile in this.knownTiles)
+            {
+                tile.FillTile(g);
             }
         }
 
