@@ -57,25 +57,32 @@ namespace research_project
             t.GenerateTiling();
             
             t.DrawTiling(g);
-            //t.FillTiling(g);
+            t.FillTiling(g);
             
-            // TestFillTile(g, t.knownTiles[0]);
+            //Drawing "-arc" seems to work as expected (i.e. it draws in the opposite direction)
+            // GenericTile initial = t.knownTiles[0];
+            // Circle c1 = initial.edges[0].c;
+            // g.DrawEllipse(Pens.Black, c1.GetRectangle());
+            // float startAngleDegrees =  (float) ((180 / Math.PI) * (3 * (Math.PI/2)));
+            // float sweepAngleDegrees = (float) ((180 / Math.PI) * (-Math.PI/4));
+            // g.DrawArc(Pens.Orange, c1.GetRectangle(), startAngleDegrees, sweepAngleDegrees);
+
+            //TestFillTile(g, t.knownTiles[0]);
             // TestFillTile(g, t.knownTiles[20]);
         }
 
         public void TestFillTile(Graphics g, GenericTile t)
         {
-            foreach (var geo in t.edges)
-            {
-                geo.Draw(g);
-            }
 
             GraphicsPath p = new GraphicsPath();
             
-            p.AddArc(t.edges[3].c.GetRectangle(), t.edges[3].startAngleDegree, t.edges[3].diffAngleDegree);
-            p.AddArc(t.edges[2].c.GetRectangle(), t.edges[2].startAngleDegree, t.edges[2].diffAngleDegree);
-            p.AddArc(t.edges[1].c.GetRectangle(), t.edges[1].startAngleDegree, t.edges[1].diffAngleDegree);
-            p.AddArc(t.edges[0].c.GetRectangle(), t.edges[0].startAngleDegree, t.edges[0].diffAngleDegree);
+            // p.AddArc(t.edges[0].c.GetRectangle(), t.edges[0].startAngleDegree, t.edges[0].diffAngleDegree);
+            // p.AddArc(t.edges[1].c.GetRectangle(), t.edges[1].startAngleDegree, t.edges[1].diffAngleDegree);
+            // p.AddArc(t.edges[2].c.GetRectangle(), t.edges[2].startAngleDegree, t.edges[2].diffAngleDegree);
+            // p.AddArc(t.edges[3].c.GetRectangle(), t.edges[3].startAngleDegree, t.edges[3].diffAngleDegree);
+            
+            
+            
 
             g.FillRegion(Brushes.Red, new Region(p));
         }

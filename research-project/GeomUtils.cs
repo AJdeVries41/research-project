@@ -25,9 +25,14 @@ namespace research_project
         {
             return (p1.Item1 + p2.Item1, p1.Item2 + p2.Item2);
         }
-
-        //Convert a point on the circle c to the relative angle phi from that centerpoint
-        //Returns an angle [0, 2*pi]
+        
+        /// <summary>
+        /// Convert a point on the circle c to the angle phi from the centerpoint of c
+        /// The angle returned is always in the domain [0,2pi]
+        /// </summary>
+        /// <param name="c">Circle with the centerpoint to consider</param>
+        /// <param name="p">The point to convert</param>
+        /// <returns>The angle in polar coordinates from the centerpoint of c in domain [0, 2pi]</returns>
         public static double ConvertToPolar(Circle c, (double, double) p)
         {
             var cX = c.centerPoint.Item1;
@@ -50,6 +55,12 @@ namespace research_project
             return angle;
         }
 
+        /// <summary>
+        /// Given a circle c and angle, convert that to Euclidean coordinates
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="angle"></param>
+        /// <returns></returns>
         public static (double, double) ConvertFromPolar(Circle c, double angle)
         {
             double cX = c.centerPoint.Item1;

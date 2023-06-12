@@ -73,7 +73,7 @@ namespace research_project
         }
         
         /// <summary>
-        /// Reflects into any of North, West, South or East directions
+        /// Reflects this tile into any of North, West, South or East directions
         /// </summary>
         /// <param name="dir">direction into which we should reflect (N, W, S, E)</param>
         /// <param name="step">which step was taken from this tile to get here (F, L, R)</param>
@@ -81,34 +81,41 @@ namespace research_project
         public HolonomyTile ReflectIntoDirection(Direction dir, Step step)
         {
             var newEdges = new Geodesic[this.edges.Length];
-            var reflectInto = this.edges[Convert.ToInt32(dir)];
-            Geodesic reflNorth = this.edges[Convert.ToInt32(Direction.N)].ReflectIntoEdge(reflectInto);
-            Geodesic reflWest = this.edges[Convert.ToInt32(Direction.W)].ReflectIntoEdge(reflectInto);
-            Geodesic reflSouth = this.edges[Convert.ToInt32(Direction.S)].ReflectIntoEdge(reflectInto);
-            Geodesic reflEast = this.edges[Convert.ToInt32(Direction.E)].ReflectIntoEdge(reflectInto);
+            var reflectionCircle = this.edges[Convert.ToInt32(dir)].c;
+            //swap the start and endpoint of reflectinto, that is the new edge
+            //this.edges[Convert.ToInt32(dir)] will be an edge in the reflected tile,
+            //but with swapped start and end points. As a consqequence, the start and sweep angle will also
+            //have to be recomputed
+            var reflectInEdge = this.edges[Convert.ToInt32(dir)];
+            var newEdge = new Geodesic(reflectionCircle, reflectInEdge.endPoint, reflectInEdge.startPoint);
+
+            Geodesic reflNorth = this.edges[Convert.ToInt32(Direction.N)].ReflectIntoEdge(reflectionCircle);
+            Geodesic reflWest = this.edges[Convert.ToInt32(Direction.W)].ReflectIntoEdge(reflectionCircle);
+            Geodesic reflSouth = this.edges[Convert.ToInt32(Direction.S)].ReflectIntoEdge(reflectionCircle);
+            Geodesic reflEast = this.edges[Convert.ToInt32(Direction.E)].ReflectIntoEdge(reflectionCircle);
             switch (dir)
             {
                 case Direction.N:
                     newEdges[Convert.ToInt32(Direction.N)] = reflSouth;
                     newEdges[Convert.ToInt32(Direction.W)] = reflWest;
-                    newEdges[Convert.ToInt32(Direction.S)] = reflectInto;
+                    newEdges[Convert.ToInt32(Direction.S)] = newEdge;
                     newEdges[Convert.ToInt32(Direction.E)] = reflEast;
                     break;
                 case Direction.W:
                     newEdges[Convert.ToInt32(Direction.N)] = reflNorth;
                     newEdges[Convert.ToInt32(Direction.W)] = reflEast;
                     newEdges[Convert.ToInt32(Direction.S)] = reflSouth;
-                    newEdges[Convert.ToInt32(Direction.E)] = reflectInto;
+                    newEdges[Convert.ToInt32(Direction.E)] = newEdge;
                     break;
                 case Direction.S:
-                    newEdges[Convert.ToInt32(Direction.N)] = reflectInto;
+                    newEdges[Convert.ToInt32(Direction.N)] = newEdge;
                     newEdges[Convert.ToInt32(Direction.W)] = reflWest;
                     newEdges[Convert.ToInt32(Direction.S)] = reflNorth;
                     newEdges[Convert.ToInt32(Direction.E)] = reflEast;
                     break;
                 case Direction.E:
                     newEdges[Convert.ToInt32(Direction.N)] = reflNorth;
-                    newEdges[Convert.ToInt32(Direction.W)] = reflectInto;
+                    newEdges[Convert.ToInt32(Direction.W)] = newEdge;
                     newEdges[Convert.ToInt32(Direction.S)] = reflSouth;
                     newEdges[Convert.ToInt32(Direction.E)] = reflWest;
                     break;
@@ -159,6 +166,11 @@ namespace research_project
             }
             HolonomyTile reflectedTile = new HolonomyTile(newEdges, dir, newPath, hasFirstLeftOccurred, rightBeforeLeft, wasLastStepRight);
             return reflectedTile;
+        }
+
+        public override string ToString()
+        {
+            return this.path;
         }
     }
 }

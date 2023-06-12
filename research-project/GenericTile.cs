@@ -31,7 +31,7 @@ namespace research_project
             {
                 if (geo != null)
                 {
-                    geo.Draw(g);
+                    g.DrawArc(Pens.Orange,geo.c.GetRectangle(), geo.startAngleDegree, geo.sweepAngleDegree);
                 }
             }
         }
@@ -39,9 +39,9 @@ namespace research_project
         public void FillTile(Graphics g)
         {
             GraphicsPath gp = new GraphicsPath();
-            for (int i = this.edges.Length - 1; i >= 0; i--)
+            for (int i = 0; i < this.edges.Length; i++)
             {
-                gp.AddArc(this.edges[i].c.GetRectangle(), this.edges[i].startAngleDegree, this.edges[i].diffAngleDegree);
+                gp.AddArc(this.edges[i].c.GetRectangle(), this.edges[i].startAngleDegree, this.edges[i].sweepAngleDegree);
             }
             MD5 md5 = MD5.Create();
             var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(this.ToString()));
@@ -59,9 +59,8 @@ namespace research_project
             {
                 Circle c = circles[i];
                 
-                //we are drawing the circle counterclockwise from the "end" point to the "start" point
-                var start = points[j];
-                var dest = points[i];
+                var start = points[i];
+                var dest = points[j];
 
                 Geodesic edge = new Geodesic(c, start, dest);
                 this.edges[i] = edge;
@@ -80,13 +79,13 @@ namespace research_project
         /// </summary>
         /// <param name="reflectInto"></param>
         /// <returns></returns>
-        public GenericTile ReflectIntoEdge(Geodesic reflectInto)
+        public GenericTile ReflectIntoEdge(Circle reflectionCircle)
         {
             var newEdges = new Geodesic[this.edges.Length];
             //reflect all edges[j] into edges[i]
             for (int j = 0; j < this.edges.Length; j++)
             {
-                Geodesic reflection = this.edges[j].ReflectIntoEdge(reflectInto);
+                Geodesic reflection = this.edges[j].ReflectIntoEdge(reflectionCircle);
                 newEdges[j] = reflection;
             }
             GenericTile newTile = new GenericTile(newEdges);

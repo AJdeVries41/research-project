@@ -114,7 +114,7 @@ namespace research_project
                 GenericTile current = q.Dequeue();
                 for (int i = 0; i < current.edges.Length; i++)
                 {
-                    GenericTile reflectedTile = current.ReflectIntoEdge(current.edges[i]);
+                    GenericTile reflectedTile = current.ReflectIntoEdge(current.edges[i].c);
                     if (!this.knownTiles.Contains(reflectedTile))
                     {
                         this.knownTiles.Add(reflectedTile);
@@ -187,7 +187,6 @@ namespace research_project
             foreach (var tile in this.knownTiles)
             {
                 tile.DrawBounds(g);
-                //tile.FillTile(g);
             }
         }
 

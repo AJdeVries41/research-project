@@ -4,117 +4,109 @@ using System.Dynamic;
 
 namespace research_project
 {
-    public class Geodesic : IEquatable<Geodesic>
+    public class Geodesic
     {
         public Circle c;
+        public (double, double) startPoint;
+        public (double, double) endPoint;
+
         public float startAngleDegree;
-        public float diffAngleDegree;
+        public float sweepAngleDegree;
 
         //Construct Geodesic based on a circle and two points that lie on that circle
-        public Geodesic(Circle c, (double, double) point1, (double, double) point2)
+        public Geodesic(Circle c, (double, double) start, (double, double) end)
         {
             this.c = c;
-            var angles = this.ComputeAngles(c, point1, point2);
-            this.startAngleDegree = angles.Item1;
-            this.diffAngleDegree = angles.Item2;
+            this.startPoint = start;
+            this.endPoint = end;
+            this.startAngleDegree = (float) ((180/Math.PI) * GeomUtils.ConvertToPolar(this.c, this.startPoint));
+            this.sweepAngleDegree = this.ComputeSweepAngle();
         }
-        
-        //Compute the start angle and sweep angle based on 2 points that lie on a circle
-        //returns (startAngle, sweepAngle) as a tuple
-        private (float, float) ComputeAngles(Circle c, (double, double) point1, (double, double) point2)
+
+        private float ComputeSweepAngle()
         {
-            var angle1 = GeomUtils.ConvertToPolar(c, point1);
-            var angle2 = GeomUtils.ConvertToPolar(c, point2);
-            
-            //always draw from the lower angle
-            var fromAngle = Math.Min(angle1, angle2);
-            var toAngle = Math.Max(angle1, angle2);
-            double diffAngle;
-            if ((toAngle - fromAngle) > Math.PI)
+            var startAngle = GeomUtils.ConvertToPolar(this.c, this.startPoint);
+            var endAngle = GeomUtils.ConvertToPolar(this.c, this.endPoint);
+            double sweepAngle;
+            //Case 1: start is in Quadrant 4 and end is in Quadrant 1
+            if (startAngle >= (3 * Math.PI / 2) && startAngle <= 2 * Math.PI && endAngle >= 0 &&
+                endAngle <= (Math.PI / 2))
             {
-                (fromAngle, toAngle) = (toAngle, fromAngle);
-                diffAngle = (toAngle + 2 * Math.PI) - fromAngle;
+                sweepAngle = ((2 * Math.PI + endAngle) - startAngle);
+            }
+            //Case 2: start is in Quadrant 1 and end is in Quadrant 4
+            //Since we draw from start to end, we are now drawing in opposite direction,
+            //which means we need to append a "-" before the angle
+            else if (startAngle >= 0 && startAngle <= (Math.PI / 2) && endAngle >= (3 * Math.PI / 2) &&
+                     endAngle <= 2 * Math.PI)
+            {
+                sweepAngle = -((2 * Math.PI + startAngle) - endAngle);
+            }
+            //Otherwise, just subtract the smallest from the largest
+            //if the largest is end, don't put a "-" in front
+            //if the largest is start, put a "-" in front
+            //Case 3
+            else if (endAngle > startAngle)
+            {
+                sweepAngle = (endAngle - startAngle);
+            }
+            //startAngle > endAngle
+            else
+            {
+                sweepAngle = -(startAngle - endAngle);
+            }
+            return (float) ((180/Math.PI) * sweepAngle);
+        }
+
+        private (double, double) GenerateMidPoint()
+        {
+            double startAngleRad = GeomUtils.ConvertToPolar(this.c, this.startPoint);
+            double endAngleRad = GeomUtils.ConvertToPolar(this.c, this.endPoint);
+
+            var minAngle = Math.Min(startAngleRad, endAngleRad);
+            var maxAngle = Math.Max(startAngleRad, endAngleRad);
+            double diffAngleRad;
+            if ((maxAngle - minAngle) > Math.PI)
+            {
+                (minAngle, maxAngle) = (maxAngle, minAngle);
+                diffAngleRad = (maxAngle + 2 * Math.PI) - minAngle;
             }
             else
             {
-                diffAngle = toAngle - fromAngle;
+                diffAngleRad = maxAngle - minAngle;
             }
-            var startAngleDegree = (float) ((180 / Math.PI) * fromAngle);
-            var diffAngleDegree = (float) ((180 / Math.PI) * diffAngle);
-            return (startAngleDegree, diffAngleDegree);
+
+            var midAngleRad = startAngleRad + (diffAngleRad / 2);
+            (double, double) midPoint = GeomUtils.ConvertFromPolar(this.c, midAngleRad);
+            return midPoint;
         }
         
-        //reflect this edge into edge b
-        //returns the geodesic representing the new edge
-        public Geodesic ReflectIntoEdge(Geodesic b)
+        /// <summary>
+        /// Reflects this edge into another edge represented by the reflectionCircle of that edge
+        /// </summary>
+        /// <param name="reflectionCircle"></param>
+        /// <returns>A new edge that is reflected into the other edge</returns>
+        public Geodesic ReflectIntoEdge(Circle reflectionCircle)
         {
             Circle c = this.c;
-            double startAngleRad = (Math.PI / 180) * this.startAngleDegree;
-            double midAngleRad = (Math.PI / 180) * (this.startAngleDegree + (this.diffAngleDegree / 2));
-            double endAngleRad = (Math.PI / 180) * (this.startAngleDegree + this.diffAngleDegree);
 
-            (double, double) startPoint = GeomUtils.ConvertFromPolar(c, startAngleRad);
-            (double, double) midPoint = GeomUtils.ConvertFromPolar(c, midAngleRad);
-            (double, double) endPoint = GeomUtils.ConvertFromPolar(c, endAngleRad);
+            (double, double) startPoint = this.startPoint;
+            (double, double) midPoint = GenerateMidPoint();
+            (double, double) endPoint = this.endPoint;
 
-            var reflectionCircle = b.c;
+            var newStartPoint = GeomUtils.InvertPoint(endPoint, reflectionCircle);
+            var newMidPoint = GeomUtils.InvertPoint(midPoint, reflectionCircle);
+            var newEndPoint = GeomUtils.InvertPoint(startPoint, reflectionCircle);
 
-            var reflectStartPoint = GeomUtils.InvertPoint(startPoint, reflectionCircle);
-            var reflectMidPoint = GeomUtils.InvertPoint(midPoint, reflectionCircle);
-            var reflectEndPoint = GeomUtils.InvertPoint(endPoint, reflectionCircle);
+            var resultingCircle = GeomUtils.CircleFromThreePoints(newStartPoint, newMidPoint, newEndPoint);
 
-            var resultingCircle = GeomUtils.CircleFromThreePoints(reflectStartPoint, reflectMidPoint, reflectEndPoint);
-
-            Geodesic res = new Geodesic(resultingCircle, reflectStartPoint, reflectEndPoint);
+            Geodesic res = new Geodesic(resultingCircle, newStartPoint, newEndPoint);
             return res;
-        }
-
-        public void Draw(Graphics g)
-        {
-            try
-            {
-                g.DrawArc(Pens.Orange, this.c.GetRectangle(), this.startAngleDegree, this.diffAngleDegree);
-            }
-            catch (ArgumentException e)
-            {
-                Console.WriteLine($"Got argument exception when trying to draw {this.ToString()}");
-                //Don't draw this arc (this occurs seemingly at random, and I don't really know why)
-                //Though I suppose it could have to do with drawing really small stuff near the border of the unit circle
-                return;
-            }
-            
         }
 
         public override string ToString()
         {
-            return $"Geodesic<{nameof(c)}: {c}, {nameof(startAngleDegree)}: {startAngleDegree}, {nameof(diffAngleDegree)}: {diffAngleDegree}>";
-        }
-
-
-        public bool Equals(Geodesic other)
-        {
-            return Equals(c, other.c)
-                   && GeomUtils.NearlyEqual(this.startAngleDegree, other.startAngleDegree)
-                   && GeomUtils.NearlyEqual(this.diffAngleDegree, other.diffAngleDegree);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((Geodesic)obj);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = (c != null ? c.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ startAngleDegree.GetHashCode();
-                hashCode = (hashCode * 397) ^ diffAngleDegree.GetHashCode();
-                return hashCode;
-            }
+            return $"{nameof(c)}: {c}, {nameof(startPoint)}: {startPoint}, {nameof(endPoint)}: {endPoint}";
         }
     }
 }
