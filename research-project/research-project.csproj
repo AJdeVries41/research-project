@@ -47,8 +47,9 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Circle.cs" />
-        <Compile Include="GenericTile.cs" />
+        <Compile Include="Tile.cs" />
         <Compile Include="HolonomyTile.cs" />
+        <Compile Include="HolonomyTiling.cs" />
         <Compile Include="Step.cs" />
         <Compile Include="Direction.cs" />
         <Compile Include="Form1.cs">

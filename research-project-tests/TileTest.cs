@@ -19,11 +19,11 @@ namespace research_project_tests
         // public void TestTileEquals()
         // {
         //     Tiling t = new Tiling(4, 5, 800, Math.PI / 4);
-        //     Tile initial = new Tile(t.initialPoints, t.initialCircles);
-        //     Geodesic[] otherEdges = new Geodesic[initial.edges.Length];
-        //     for (int i = 0; i < initial.edges.Length; i++)
+        //     Tile initial = new Tile(t.InitialPoints, t.InitialCircles);
+        //     Geodesic[] otherEdges = new Geodesic[initial.Edges.Length];
+        //     for (int i = 0; i < initial.Edges.Length; i++)
         //     {
-        //         otherEdges[i] = initial.edges[i];
+        //         otherEdges[i] = initial.Edges[i];
         //     }
         //     (otherEdges[0], otherEdges[2]) = (otherEdges[2], otherEdges[0]);
         //     Tile initialDifferentOrder = new Tile(otherEdges);
@@ -36,24 +36,24 @@ namespace research_project_tests
         //     int resolution = 800;
         //
         //     Tiling t = new Tiling(4, 5, 800, Math.PI / 4);
-        //     Tile initial = new Tile(t.initialPoints, t.initialCircles);
+        //     Tile initial = new Tile(t.InitialPoints, t.InitialCircles);
         //
-        //     Geodesic topEdge = initial.edges[0];
+        //     Geodesic topEdge = initial.Edges[0];
         //     
         //     //Reflecting twice in an edge should result in the original tile
         //     Tile reflection = initial.ReflectIntoEdge(topEdge);
         //     Tile reflectTwice = reflection.ReflectIntoEdge(topEdge);
         //
-        //     for (int i = 0; i < initial.edges.Length; i++)
+        //     for (int i = 0; i < initial.Edges.Length; i++)
         //     {
-        //         bool result = initial.edges[i].Equals(reflectTwice.edges[i]);
+        //         bool result = initial.Edges[i].Equals(reflectTwice.Edges[i]);
         //         Console.WriteLine(result);
         //     }
         //
         //     // bool resultTest = initial.Equals(reflectTwice);
-        //     // bool bool1 = initial.edges.SequenceEqual(reflectTwice.edges);
-        //     // bool bool2 = initial.edges.Equals(reflectTwice.edges);
-        //     // var setDifference = initial.edges.Except(reflectTwice.edges);
+        //     // bool bool1 = initial.Edges.SequenceEqual(reflectTwice.Edges);
+        //     // bool bool2 = initial.Edges.Equals(reflectTwice.Edges);
+        //     // var setDifference = initial.Edges.Except(reflectTwice.Edges);
         //
         //     Assert.AreEqual(initial, reflectTwice);
         // }

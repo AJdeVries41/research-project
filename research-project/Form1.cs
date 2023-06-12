@@ -24,6 +24,7 @@ namespace research_project
         private void Form1_Load(object sender, EventArgs e)
         {
             AllocConsole();
+            //To make sure that the entire image is redrawn whenever the window is resized
             this.ResizeRedraw = true;
         }
         
@@ -46,76 +47,19 @@ namespace research_project
             //previously, any shapes with `drawXYZ` were drawn with topLeft point.
             //however, now we have to use the bottomLeft point because we flipped every point across the 
             //y-axis.
-            //It still kinda makes sense tho, since we still use the point that is "closest" to the origin in all cases.
-            //Also, now g.DrawArc draws arcs counterclockwise
 
             var lesserScreenSize = Math.Min(this.ClientSize.Width, this.ClientSize.Height);
-            
-            
-            Tiling t = new Tiling(4, 5, lesserScreenSize, Math.PI/4);
+
+            HolonomyTiling t = new HolonomyTiling(lesserScreenSize, Math.PI / 4);
             
             t.GenerateTiling();
-            
-            t.DrawTiling(g);
             t.FillTiling(g);
             
-            //Drawing "-arc" seems to work as expected (i.e. it draws in the opposite direction)
-            // GenericTile initial = t.knownTiles[0];
-            // Circle c1 = initial.edges[0].c;
-            // g.DrawEllipse(Pens.Black, c1.GetRectangle());
-            // float startAngleDegrees =  (float) ((180 / Math.PI) * (3 * (Math.PI/2)));
-            // float sweepAngleDegrees = (float) ((180 / Math.PI) * (-Math.PI/4));
-            // g.DrawArc(Pens.Orange, c1.GetRectangle(), startAngleDegrees, sweepAngleDegrees);
-
-            //TestFillTile(g, t.knownTiles[0]);
-            // TestFillTile(g, t.knownTiles[20]);
+            // Tiling fiveFour = new Tiling(5, 4, lesserScreenSize, Math.PI/4);
+            //
+            // fiveFour.GenerateTiling();
+            // fiveFour.DrawTiling(g);
+            
         }
-
-        public void TestFillTile(Graphics g, GenericTile t)
-        {
-
-            GraphicsPath p = new GraphicsPath();
-            
-            // p.AddArc(t.edges[0].c.GetRectangle(), t.edges[0].startAngleDegree, t.edges[0].diffAngleDegree);
-            // p.AddArc(t.edges[1].c.GetRectangle(), t.edges[1].startAngleDegree, t.edges[1].diffAngleDegree);
-            // p.AddArc(t.edges[2].c.GetRectangle(), t.edges[2].startAngleDegree, t.edges[2].diffAngleDegree);
-            // p.AddArc(t.edges[3].c.GetRectangle(), t.edges[3].startAngleDegree, t.edges[3].diffAngleDegree);
-            
-            
-            
-
-            g.FillRegion(Brushes.Red, new Region(p));
-        }
-
-        public void TestFillTriangle(Graphics g)
-        {
-            Point a = new Point(0, 0);
-            Point b = new Point(200, 200);
-            Point c = new Point(300, 0);
-
-            //    b
-            //a      c 
-            
-            g.DrawLine(Pens.Black, a, b);
-            g.DrawLine(Pens.Black, b, c);
-            g.DrawLine(Pens.Black, a, c);
-
-            GraphicsPath p = new GraphicsPath();
-            p.AddLine(a, b);
-            p.AddLine(b, c);
-            //p.AddLine(a, c);
-            
-            
-            g.FillRegion(Brushes.Orange, new Region(p));
-
-        }
-
-        private void DrawPoint(Graphics g, Color c, (double, double) point)
-        {
-            Point p = new Point((int)Math.Round(point.Item1), (int)Math.Round(point.Item2));
-            g.FillRectangle(new SolidBrush(c), p.X, p.Y, 5, 5);
-        }
-        
-        
     }
 }

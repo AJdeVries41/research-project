@@ -4,27 +4,27 @@ using System.Security.Permissions;
 
 namespace research_project
 {
-    //Whether we are allowed to generate a tile in a specific Step depends on three conditions
-    //https://math.stackexchange.com/questions/2222314/description-of-the-order-5-square-tiling-of-the-hyperbolic-plane-as-a-graph/2231612#2231612
-    //1) No two right consecutive steps are allowed
-    //2) No two left steps are allowed to happen without at least 1 right step in between
-    public class HolonomyTile : GenericTile
+    public class HolonomyTile : Tile
     {
         public Direction CurrentForwardDirection;
-        public String path;
+        private String path;
+        //Whether we are allowed to generate a tile in a specific Step depends on three conditions
+        //https://math.stackexchange.com/questions/2222314/description-of-the-order-5-square-tiling-of-the-hyperbolic-plane-as-a-graph/2231612#2231612
+        //1) No two right consecutive steps are allowed
+        //2) No two left steps are allowed to happen without at least 1 right step in between
         //You are always allowed to take the first left step that appears
-        public bool hasFirstLeftOccurred;
+        public bool HasFirstLeftOccurred;
         //Has a right step occurred before we encountered the next left step?
-        public bool rightBeforeLeft;
+        public bool RightBeforeLeft;
         //Was the last step a right step?
-        public bool wasLastStepRight;
+        public bool WasLastStepRight;
         
         /// <summary>
         /// Constructor for the initial tile
-        /// For a HolonomyTile, it holds that edges[0] = top edge,
-        /// edges[1] = left edge
-        /// edges[2] = bottom edge
-        /// edges[3] = right edge
+        /// For a HolonomyTile, it holds that Edges[0] = top edge,
+        /// Edges[1] = left edge
+        /// Edges[2] = bottom edge
+        /// Edges[3] = right edge
         /// </summary>
         /// <param name="points"></param>
         /// <param name="circles"></param>
@@ -32,30 +32,38 @@ namespace research_project
         {
             this.CurrentForwardDirection = Direction.O;
             this.path = "";
-            this.hasFirstLeftOccurred = false;
-            this.rightBeforeLeft = false;
-            this.wasLastStepRight = false;
+            this.HasFirstLeftOccurred = false;
+            this.RightBeforeLeft = false;
+            this.WasLastStepRight = false;
         }
         
-        //Constructor for a general tile which was created via reflection
+        /// <summary>
+        /// Constructor for a tile that was created via reflection
+        /// </summary>
+        /// <param name="edges"></param>
+        /// <param name="newForwardDirection">Specifies the direction that is the forward direction for this tile</param>
+        /// <param name="newPath"></param>
+        /// <param name="hasFirstLeftOccurred">Has the first left step occurred when reaching this tile</param>
+        /// <param name="rightBeforeLeft">Did we see another right step before the next left step</param>
+        /// <param name="wasLastStepRight">Was the previous step to arrive here a right step</param>
         public HolonomyTile(Geodesic[] edges, Direction newForwardDirection, String newPath, 
             bool hasFirstLeftOccurred, bool rightBeforeLeft, bool wasLastStepRight) : base(edges)
         {
             this.CurrentForwardDirection = newForwardDirection;
             this.path = newPath;
-            this.hasFirstLeftOccurred = hasFirstLeftOccurred;
-            this.rightBeforeLeft = rightBeforeLeft;
-            this.wasLastStepRight = wasLastStepRight;
+            this.HasFirstLeftOccurred = hasFirstLeftOccurred;
+            this.RightBeforeLeft = rightBeforeLeft;
+            this.WasLastStepRight = wasLastStepRight;
         }
         
-        public bool IsInitialTile()
+        private bool IsInitialTile()
         {
             return this.CurrentForwardDirection == Direction.O;
         }
         
-        public bool IsLeftAllowed()
+        private bool IsLeftAllowed()
         {
-            return (!this.hasFirstLeftOccurred) || rightBeforeLeft;
+            return (!this.HasFirstLeftOccurred) || RightBeforeLeft;
         }
 
         public bool IsStepLegal(Step step)
@@ -65,7 +73,7 @@ namespace research_project
                 case Step.F:
                     return true;
                 case Step.R:
-                    return !this.wasLastStepRight;
+                    return !this.WasLastStepRight;
                 //step == Step.Left
                 default:
                     return this.IsLeftAllowed();
@@ -80,19 +88,19 @@ namespace research_project
         /// <returns></returns>
         public HolonomyTile ReflectIntoDirection(Direction dir, Step step)
         {
-            var newEdges = new Geodesic[this.edges.Length];
-            var reflectionCircle = this.edges[Convert.ToInt32(dir)].c;
+            var newEdges = new Geodesic[this.Edges.Length];
+            var reflectionCircle = this.Edges[Convert.ToInt32(dir)].c;
             //swap the start and endpoint of reflectinto, that is the new edge
-            //this.edges[Convert.ToInt32(dir)] will be an edge in the reflected tile,
+            //this.Edges[Convert.ToInt32(dir)] will be an edge in the reflected tile,
             //but with swapped start and end points. As a consqequence, the start and sweep angle will also
             //have to be recomputed
-            var reflectInEdge = this.edges[Convert.ToInt32(dir)];
+            var reflectInEdge = this.Edges[Convert.ToInt32(dir)];
             var newEdge = new Geodesic(reflectionCircle, reflectInEdge.endPoint, reflectInEdge.startPoint);
 
-            Geodesic reflNorth = this.edges[Convert.ToInt32(Direction.N)].ReflectIntoEdge(reflectionCircle);
-            Geodesic reflWest = this.edges[Convert.ToInt32(Direction.W)].ReflectIntoEdge(reflectionCircle);
-            Geodesic reflSouth = this.edges[Convert.ToInt32(Direction.S)].ReflectIntoEdge(reflectionCircle);
-            Geodesic reflEast = this.edges[Convert.ToInt32(Direction.E)].ReflectIntoEdge(reflectionCircle);
+            Geodesic reflNorth = this.Edges[Convert.ToInt32(Direction.N)].ReflectIntoEdge(reflectionCircle);
+            Geodesic reflWest = this.Edges[Convert.ToInt32(Direction.W)].ReflectIntoEdge(reflectionCircle);
+            Geodesic reflSouth = this.Edges[Convert.ToInt32(Direction.S)].ReflectIntoEdge(reflectionCircle);
+            Geodesic reflEast = this.Edges[Convert.ToInt32(Direction.E)].ReflectIntoEdge(reflectionCircle);
             switch (dir)
             {
                 case Direction.N:
@@ -140,8 +148,8 @@ namespace research_project
             }
             else if (step == Step.F)
             {
-                hasFirstLeftOccurred = this.hasFirstLeftOccurred;
-                rightBeforeLeft = this.rightBeforeLeft;
+                hasFirstLeftOccurred = this.HasFirstLeftOccurred;
+                rightBeforeLeft = this.RightBeforeLeft;
                 wasLastStepRight = false;
                 newPath = this.path + step.ToString();
             }
@@ -154,7 +162,7 @@ namespace research_project
             }
             else if (step == Step.R)
             {
-                hasFirstLeftOccurred = this.hasFirstLeftOccurred;
+                hasFirstLeftOccurred = this.HasFirstLeftOccurred;
                 rightBeforeLeft = true;
                 wasLastStepRight = true;
                 newPath = this.path + step.ToString();

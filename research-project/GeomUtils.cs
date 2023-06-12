@@ -35,8 +35,8 @@ namespace research_project
         /// <returns>The angle in polar coordinates from the centerpoint of c in domain [0, 2pi]</returns>
         public static double ConvertToPolar(Circle c, (double, double) p)
         {
-            var cX = c.centerPoint.Item1;
-            var cY = c.centerPoint.Item2;
+            var cX = c.CenterPoint.Item1;
+            var cY = c.CenterPoint.Item2;
             var pX = p.Item1;
             var pY = p.Item2;
             var phi = Math.Atan2(pY - cY, pX - cX);
@@ -63,12 +63,12 @@ namespace research_project
         /// <returns></returns>
         public static (double, double) ConvertFromPolar(Circle c, double angle)
         {
-            double cX = c.centerPoint.Item1;
-            double cY = c.centerPoint.Item2;
+            double cX = c.CenterPoint.Item1;
+            double cY = c.CenterPoint.Item2;
             double r = c.r;
             double centerToX = r * Math.Cos(angle);
             double centerToY = r * Math.Sin(angle);
-            return AddPoints(c.centerPoint, (centerToX, centerToY));
+            return AddPoints(c.CenterPoint, (centerToX, centerToY));
         }
         
         //see https://www.malinc.se/noneuclidean/en/circleinversion.php
@@ -78,8 +78,8 @@ namespace research_project
             
             double x = point.Item1;
             double y = point.Item2;
-            double centerX = c.centerPoint.Item1;
-            double centerY = c.centerPoint.Item2;
+            double centerX = c.CenterPoint.Item1;
+            double centerY = c.CenterPoint.Item2;
             double r = c.r;
             
             double EPSILON = 0.000001;
@@ -92,7 +92,7 @@ namespace research_project
             if (Math.Abs(hypot) < EPSILON)
             {
                 throw new ArithmeticException(
-                    "Cannot invert a centerPoint of a circle (this would result in division by zero)");
+                    "Cannot invert a CenterPoint of a circle (this would result in division by zero)");
             }
             
             var phi = Math.Atan2(centerToY, centerToX);

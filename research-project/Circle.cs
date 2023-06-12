@@ -7,19 +7,24 @@ namespace research_project
     public class Circle : IEquatable<Circle>
     {
         public double r { get; }
-        public (double, double) centerPoint { get; }
+        public (double, double) CenterPoint { get; }
 
         public Circle(double r, (double, double) p)
         {
             this.r = r;
-            this.centerPoint = p;
+            this.CenterPoint = p;
         }
 
+        /// <summary>
+        /// Computes the bounding rectangle of this circle, i.e. the rectangle such that the courcles touches
+        /// (and does not cross) this rectangle
+        /// </summary>
+        /// <returns></returns>
         public Rectangle GetRectangle()
         {
             int r = (int) Math.Round(this.r);
-            int cx = (int) Math.Round(this.centerPoint.Item1);
-            int cy = (int) Math.Round(this.centerPoint.Item2);
+            int cx = (int) Math.Round(this.CenterPoint.Item1);
+            int cy = (int) Math.Round(this.CenterPoint.Item2);
             Point bottomLeft = new Point()
             {
                 X=cx-r,
@@ -33,8 +38,8 @@ namespace research_project
         public bool Equals(Circle other)
         {
             return GeomUtils.NearlyEqual(this.r, other.r)
-                   && GeomUtils.NearlyEqual(this.centerPoint.Item1, other.centerPoint.Item1)
-                   && GeomUtils.NearlyEqual(this.centerPoint.Item2, other.centerPoint.Item2);
+                   && GeomUtils.NearlyEqual(this.CenterPoint.Item1, other.CenterPoint.Item1)
+                   && GeomUtils.NearlyEqual(this.CenterPoint.Item2, other.CenterPoint.Item2);
         }
 
         public override bool Equals(object obj)
@@ -49,13 +54,13 @@ namespace research_project
         {
             unchecked
             {
-                return (r.GetHashCode() * 397) ^ centerPoint.GetHashCode();
+                return (r.GetHashCode() * 397) ^ CenterPoint.GetHashCode();
             }
         }
 
         public override string ToString()
         {
-            return $"{nameof(r)}: {r}, {nameof(centerPoint)}: {centerPoint}";
+            return $"{nameof(r)}: {r}, {nameof(CenterPoint)}: {CenterPoint}";
         }
     }
 }

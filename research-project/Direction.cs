@@ -13,9 +13,5 @@
         //Origin, which is used when we don't reflect in any direction, because it's the origin tile
         O = -1
     }
-    
-    
-    
-
 
 }

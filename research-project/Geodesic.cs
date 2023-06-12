@@ -88,15 +88,13 @@ namespace research_project
         /// <returns>A new edge that is reflected into the other edge</returns>
         public Geodesic ReflectIntoEdge(Circle reflectionCircle)
         {
-            Circle c = this.c;
-
-            (double, double) startPoint = this.startPoint;
             (double, double) midPoint = GenerateMidPoint();
-            (double, double) endPoint = this.endPoint;
 
-            var newStartPoint = GeomUtils.InvertPoint(endPoint, reflectionCircle);
+            //For all reflections holds: the new start point will be the old end point
+            //and the new end point will be the old start point
+            var newStartPoint = GeomUtils.InvertPoint(this.endPoint, reflectionCircle);
             var newMidPoint = GeomUtils.InvertPoint(midPoint, reflectionCircle);
-            var newEndPoint = GeomUtils.InvertPoint(startPoint, reflectionCircle);
+            var newEndPoint = GeomUtils.InvertPoint(this.startPoint, reflectionCircle);
 
             var resultingCircle = GeomUtils.CircleFromThreePoints(newStartPoint, newMidPoint, newEndPoint);
 

@@ -8,26 +8,30 @@ using System.Text;
 
 namespace research_project
 {
-    public class GenericTile : IEquatable<GenericTile>
+    public class Tile : IEquatable<Tile>
     {
-        public Geodesic[] edges;
+        public Geodesic[] Edges;
 
-        public GenericTile(Geodesic[] edges)
+        public Tile(Geodesic[] edges)
         {
-            this.edges = edges;
+            this.Edges = edges;
         }
         
-        //Constructor for the initial tile
-        public GenericTile(List<(double, double)> points, List<Circle> circles)
+        /// <summary>
+        /// Constructor for the initial tile
+        /// </summary>
+        /// <param name="points"></param>
+        /// <param name="circles"></param>
+        public Tile(List<(double, double)> points, List<Circle> circles)
         {
             //if there are p points that also means a polygon has p sides in this tiling
-            this.edges = new Geodesic[points.Count];
+            this.Edges = new Geodesic[points.Count];
             ConstructInitialEdges(points, circles);
         }
         
         public void DrawBounds(Graphics g)
         {
-            foreach (var geo in this.edges)
+            foreach (var geo in this.Edges)
             {
                 if (geo != null)
                 {
@@ -39,9 +43,9 @@ namespace research_project
         public void FillTile(Graphics g)
         {
             GraphicsPath gp = new GraphicsPath();
-            for (int i = 0; i < this.edges.Length; i++)
+            for (int i = 0; i < this.Edges.Length; i++)
             {
-                gp.AddArc(this.edges[i].c.GetRectangle(), this.edges[i].startAngleDegree, this.edges[i].sweepAngleDegree);
+                gp.AddArc(this.Edges[i].c.GetRectangle(), this.Edges[i].startAngleDegree, this.Edges[i].sweepAngleDegree);
             }
             MD5 md5 = MD5.Create();
             var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(this.ToString()));
@@ -63,7 +67,7 @@ namespace research_project
                 var dest = points[j];
 
                 Geodesic edge = new Geodesic(c, start, dest);
-                this.edges[i] = edge;
+                this.Edges[i] = edge;
                 
                 j++;
                 if (j == points.Count)
@@ -77,25 +81,25 @@ namespace research_project
         /// <summary>
         /// Reflects this tile into the given Geodesic
         /// </summary>
-        /// <param name="reflectInto"></param>
+        /// <param name="reflectionCircle">Circle of the edge in which the reflection takes place</param>
         /// <returns></returns>
-        public GenericTile ReflectIntoEdge(Circle reflectionCircle)
+        public Tile ReflectIntoEdge(Circle reflectionCircle)
         {
-            var newEdges = new Geodesic[this.edges.Length];
-            //reflect all edges[j] into edges[i]
-            for (int j = 0; j < this.edges.Length; j++)
+            var newEdges = new Geodesic[this.Edges.Length];
+            //reflect all Edges[j] into Edges[i]
+            for (int j = 0; j < this.Edges.Length; j++)
             {
-                Geodesic reflection = this.edges[j].ReflectIntoEdge(reflectionCircle);
+                Geodesic reflection = this.Edges[j].ReflectIntoEdge(reflectionCircle);
                 newEdges[j] = reflection;
             }
-            GenericTile newTile = new GenericTile(newEdges);
+            Tile newTile = new Tile(newEdges);
             return newTile;
         }
         
         public override string ToString()
         {
             String res = "";
-            foreach (var edge in this.edges)
+            foreach (var edge in this.Edges)
             {
                 res += edge.ToString();
             }
@@ -113,22 +117,22 @@ namespace research_project
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((GenericTile)obj);
+            return Equals((Tile)obj);
         }
 
         public override int GetHashCode()
         {
-            return (edges != null ? edges.GetHashCode() : 0);
+            return (Edges != null ? Edges.GetHashCode() : 0);
         }
 
-        public bool Equals(GenericTile other)
+        public bool Equals(Tile other)
         {
-            bool equalSize = this.edges.Length == other.edges.Length;
+            bool equalSize = this.Edges.Length == other.Edges.Length;
             //I have no clue why this doesn't work the expected way
             //Why are the lists equal, but the set difference is not empty?
-            //bool equalDifferentOrder = !this.edges.Except(other.edges).Any();
+            //bool equalDifferentOrder = !this.Edges.Except(other.Edges).Any();
             
-            bool equalElements = this.edges.SequenceEqual(other.edges);
+            bool equalElements = this.Edges.SequenceEqual(other.Edges);
             return equalElements;
             
         }
