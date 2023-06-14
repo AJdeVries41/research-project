@@ -18,7 +18,7 @@ namespace research_project_tests
         // [Test]
         // public void TestTileEquals()
         // {
-        //     Tiling t = new Tiling(4, 5, 800, Math.PI / 4);
+        //     RegularTiling t = new RegularTiling(4, 5, 800, Math.PI / 4);
         //     Tile initial = new Tile(t.InitialPoints, t.InitialCircles);
         //     Geodesic[] otherEdges = new Geodesic[initial.Edges.Length];
         //     for (int i = 0; i < initial.Edges.Length; i++)
@@ -35,7 +35,7 @@ namespace research_project_tests
         // {
         //     int resolution = 800;
         //
-        //     Tiling t = new Tiling(4, 5, 800, Math.PI / 4);
+        //     RegularTiling t = new RegularTiling(4, 5, 800, Math.PI / 4);
         //     Tile initial = new Tile(t.InitialPoints, t.InitialCircles);
         //
         //     Geodesic topEdge = initial.Edges[0];

@@ -28,7 +28,7 @@ namespace research_project
             this.Edges = new Geodesic[points.Count];
             ConstructInitialEdges(points, circles);
         }
-        
+
         public void DrawBounds(Graphics g)
         {
             Pen drawingPen = new Pen(Brushes.Black, 3);

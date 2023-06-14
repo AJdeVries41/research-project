@@ -14,11 +14,32 @@ namespace research_project
             var epsilon = 0.0001;
             return Math.Abs(d1 - d2) <= epsilon;
         }
+
+        public static (double, double) SolveQuadraticEquation(double a, double b, double c)
+        {
+            double discr = Math.Pow(b, 2) - 4 * a * c;
+            double sol1 = (-b - Math.Sqrt(discr)) / (2 * a);
+            double sol2 = (-b + Math.Sqrt(discr)) / (2 * a);
+            return (sol1, sol2);
+        }
         public static double Distance((double, double) p1, (double, double) p2)
         {
             var xDiff = p1.Item1 - p2.Item1;
             var yDiff = p1.Item2 - p2.Item2;
             return Math.Sqrt(Math.Pow(xDiff, 2) + Math.Pow(yDiff, 2));
+        }
+
+        public static (double, double) GetMiddlePoint((double, double) p1, (double, double) p2)
+        {
+            var sumX = p1.Item1 + p2.Item1;
+            var sumY = p1.Item2 + p2.Item2;
+            return (sumX / 2, sumY / 2);
+        }
+
+        public static Circle CircleWithCenterThroughPoint((double, double) center, (double, double) p)
+        {
+            var dist = Distance(center, p);
+            return new Circle(dist, center);
         }
 
         public static (double, double) AddPoints((double, double) p1, (double, double) p2)
@@ -89,8 +110,8 @@ namespace research_project
 
             if (Math.Abs(hypot) < EPSILON)
             {
-                throw new ArithmeticException(
-                    "Cannot invert a CenterPoint of a circle (this would result in division by zero)");
+                Console.WriteLine("Cannot invert a CenterPoint of a circle (this would result in division by zero)");
+                return (int.MaxValue, int.MaxValue);
             }
             
             var phi = Math.Atan2(centerToY, centerToX);

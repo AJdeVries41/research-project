@@ -50,18 +50,41 @@ namespace research_project
 
             var lesserScreenSize = Math.Min(this.ClientSize.Width, this.ClientSize.Height);
 
-            HolonomyTiling t = new HolonomyTiling(lesserScreenSize, Math.PI / 4);
+            Tiling t = new HolonomyTiling(lesserScreenSize, Math.PI / 4);
             
             t.GenerateTiling();
+            
+            t.DrawTiling(g);
+            
             t.FillTiling(g);
-            //t.DrawTiling(g);
             
+            //Draw unit circle
+            //g.DrawEllipse(Pens.Red, t.UnitCircle.GetRectangle());
+
+            var c1 = new Circle(330, (-275, 110));
+            var c2 = new Circle(100, (-20, 50));
             
-            // Tiling fiveFour = new Tiling(5, 4, lesserScreenSize, Math.PI/4);
+            g.DrawEllipse(Pens.Red, c1.GetRectangle());
+            g.DrawEllipse(Pens.Red, c2.GetRectangle());
+
+            var intersections = c1.Intersect(c2);
+            foreach (var point in intersections)
+            {
+                DrawPoint(g, Brushes.Black, point);
+            }
+
+            // RegularTiling fiveFour = new RegularTiling(5, 4, lesserScreenSize, Math.PI/4);
             //
             // fiveFour.GenerateTiling();
             // fiveFour.DrawTiling(g);
-            
+
+        }
+
+        public void DrawPoint(Graphics g, Brush b, (double, double) p)
+        {
+            Point point = new Point((int) Math.Round(p.Item1), (int) Math.Round(p.Item2));
+            Rectangle r = new Rectangle(point, new Size(3, 3));
+            g.FillRectangle(b, r);
         }
     }
 }

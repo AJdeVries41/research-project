@@ -11,11 +11,16 @@ namespace research_project
         //which, when cast to a Direction, gives the direction that "step" represents
         private static readonly int[,] StepToDirection = new int[4, 3] { { 0, 1, 3 }, { 1, 2, 0 }, { 2, 3, 1 }, { 3, 0, 2 } };
 
-        public HolonomyTiling(int smallestResolution, double initialRotation) : base(4, 5, smallestResolution,
-            initialRotation)
+        public HolonomyTiling(int smallestResolution, double initialRotation) : base(4, 5, smallestResolution)
         {
-            
+            int d = CalculateInitialDistance(smallestResolution);
+            var initialPoints = this.CalculateInitialPoints(d, initialRotation);
+            var initialCircles = this.CalculateInitialCircles(initialPoints);
+            this.InitialTile = new HolonomyTile(initialPoints, initialCircles);
+            this.KnownTiles.Add(this.InitialTile);
         }
+        
+        
         
         public override void GenerateTiling()
         {
@@ -23,9 +28,8 @@ namespace research_project
             Step[] steps = { Step.F, Step.L, Step.R };
             int NUM_DESIRED_TILES = 400;
             int generatedTiles = 0;
-            HolonomyTile initial = new HolonomyTile(this.InitialPoints, this.InitialCircles);
-            this.KnownTiles.Add(initial);
             Queue<HolonomyTile> q = new Queue<HolonomyTile>();
+            HolonomyTile initial = (HolonomyTile) this.InitialTile;
 
             foreach (var dir in dirs)
             {
