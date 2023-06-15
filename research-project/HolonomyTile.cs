@@ -8,8 +8,9 @@ using System.Text;
 
 namespace research_project
 {
-    public class HolonomyTile : Tile
+    public class HolonomyTile
     {
+        public Geodesic[] Edges;
         public Direction CurrentForwardDirection;
         private String path;
         //Whether we are allowed to generate a tile in a specific Step depends on three conditions
@@ -32,8 +33,9 @@ namespace research_project
         /// </summary>
         /// <param name="points"></param>
         /// <param name="circles"></param>
-        public HolonomyTile(List<(double, double)> points, List<Circle> circles) : base(points, circles)
+        public HolonomyTile(List<(double, double)> points, List<Circle> circles)
         {
+            this.ConstructInitialEdges(points, circles);
             this.CurrentForwardDirection = Direction.O;
             this.path = "";
             this.HasFirstLeftOccurred = false;
@@ -51,8 +53,9 @@ namespace research_project
         /// <param name="rightBeforeLeft">Did we see another right step before the next left step</param>
         /// <param name="wasLastStepRight">Was the previous step to arrive here a right step</param>
         public HolonomyTile(Geodesic[] edges, Direction newForwardDirection, String newPath, 
-            bool hasFirstLeftOccurred, bool rightBeforeLeft, bool wasLastStepRight) : base(edges)
+            bool hasFirstLeftOccurred, bool rightBeforeLeft, bool wasLastStepRight)
         {
+            this.Edges = edges;
             this.CurrentForwardDirection = newForwardDirection;
             this.path = newPath;
             this.HasFirstLeftOccurred = hasFirstLeftOccurred;
@@ -179,13 +182,36 @@ namespace research_project
             HolonomyTile reflectedTile = new HolonomyTile(newEdges, dir, newPath, hasFirstLeftOccurred, rightBeforeLeft, wasLastStepRight);
             return reflectedTile;
         }
+        
+        private void ConstructInitialEdges(List<(double, double)> points, List<Circle> circles)
+        {
+             this.Edges = new Geodesic[points.Count];
+             int j = 1;
+             for (int i = 0; i < points.Count; i++)
+             {
+                 Circle c = circles[i];
+                 
+                 var start = points[i];
+                 var dest = points[j];
+
+                 Geodesic edge = new Geodesic(c, start, dest);
+                 this.Edges[i] = edge;
+                 
+                 j++;
+                 if (j == points.Count)
+                 {
+                     j = 0;
+                 }
+                 
+             }
+         }
 
         /// <summary>
         /// Set color of the tile based on the path
         /// of this tile
         /// </summary>
         /// <param name="g"></param>
-        public override void FillTile(Graphics g)
+        public void FillTile(Graphics g)
         {
             GraphicsPath gp = new GraphicsPath();
             for (int i = 0; i < this.Edges.Length; i++)
@@ -198,6 +224,18 @@ namespace research_project
             Color c = Color.FromArgb(hash[0], hash[1], hash[2]);
             Brush b = new SolidBrush(c);
             g.FillRegion(b, new Region(gp));
+        }
+        
+        public void DrawBounds(Graphics g)
+        {
+             Pen drawingPen = new Pen(Brushes.Black, 1);
+             foreach (var geo in this.Edges)
+             {
+                 if (geo != null)
+                 {
+                     g.DrawArc(drawingPen,geo.c.GetRectangle(), geo.startAngleDegree, geo.sweepAngleDegree);
+                 }
+             }
         }
         
         

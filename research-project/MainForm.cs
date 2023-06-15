@@ -50,40 +50,31 @@ namespace research_project
 
             var lesserScreenSize = Math.Min(this.ClientSize.Width, this.ClientSize.Height);
 
-            Tiling t = new HolonomyTiling(lesserScreenSize, Math.PI / 4);
+            HolonomyTiling t = new HolonomyTiling(lesserScreenSize, Math.PI / 4);
             
-            
+            g.DrawEllipse(Pens.Red, t.UnitCircle.GetRectangle());
+
+            t.MoveInitialTile((200, 30), g);
+            t.InitialTile.DrawBounds(g);
+
             t.GenerateTiling();
             t.FillTiling(g);
-            //t.DrawTiling(g);
+            t.DrawTiling(g);
+            
             //DrawingLab(g, t);
         }
 
-        public void DrawingLab(Graphics g, Tiling t)
+        public void DrawingLab(Graphics g, HolonomyTiling t)
         {
-            var B = (0, 100);
-            DrawUtils.DrawPoint(g, Brushes.Orange, B);
             g.DrawEllipse(Pens.Red, t.UnitCircle.GetRectangle());
-            //DrawUtils.DrawPoint(g, Brushes.Orange, A);
-            //DrawUtils.DrawPoint(g, Brushes.Orange, B);
-            var res = GeomUtils.HyperbolicBisectorFromCenter2(B, t.UnitCircle, g);
-            g.DrawEllipse(Pens.Aquamarine, res.GetRectangle());
-            // g.DrawEllipse(Pens.Red, t.UnitCircle.GetRectangle());
-            // (double, double) origin = (30, 30);
-            // (double, double) B = (100, 100);
-            // t.MoveInitialTile(B, g);
-
-            // var c1 = new Circle(330, (-275, 110));
-            // var c2 = new Circle(100, (-20, 50));
-            //
-            // g.DrawEllipse(Pens.Red, c1.GetRectangle());
-            // g.DrawEllipse(Pens.Red, c2.GetRectangle());
-            //
-            // var intersections = c1.Intersect(c2);
-            // foreach (var point in intersections)
-            // {
-            //     DrawPoint(g, Brushes.Black, point);
-            // }
+            g.DrawRectangle(Pens.Orange, t.UnitCircle.GetRectangle());
+            (double, double) B = (100, 100);
+            var invB = GeomUtils.InvertPoint(B, t.UnitCircle);
+            DrawUtils.DrawPoint(g, Brushes.Orange, B);
+            DrawUtils.DrawPoint(g, Brushes.Purple, invB);
+            var bisector = GeomUtils.HyperbolicBisectorFromCenter2(B, t.UnitCircle, g);
+            g.DrawEllipse(Pens.Aquamarine, bisector.GetRectangle());
+            
         }
 
         

@@ -31,7 +31,7 @@ namespace research_project
             return Math.Sqrt(Math.Pow(xDiff, 2) + Math.Pow(yDiff, 2));
         }
 
-        public static (double, double) GetMiddlePoint((double, double) p1, (double, double) p2)
+        public static (double, double) MidPoint((double, double) p1, (double, double) p2)
         {
             var sumX = p1.Item1 + p2.Item1;
             var sumY = p1.Item2 + p2.Item2;
@@ -112,7 +112,8 @@ namespace research_project
 
             if (Math.Abs(hypot) < EPSILON)
             {
-                throw new SystemException("cannot invert centerpoint of a circl without a direction");
+                hypot = EPSILON;
+                //throw new SystemException("cannot invert centerpoint of a circl without a direction");
             }
             
             var phi = Math.Atan2(centerToY, centerToX);
@@ -187,14 +188,14 @@ namespace research_project
         /// Construction 1.6 from "GoodmanStrauss"
         /// </summary>
         /// <param name="unitCircle"></param>
-        /// <param name="A"></param>
+        /// <param name="A">Point in the exterior of unitCircle</param>
         /// <returns></returns>
         public static Circle OrthogonalCircle(Circle unitCircle, (double, double) A, Graphics g)
         {
-            var M = GetMiddlePoint(unitCircle.CenterPoint, A);
+            var M = MidPoint(unitCircle.CenterPoint, A);
+            //Construct a circle with M as centerpoint that passes thru origin
             double r1 = GeomUtils.Distance(M, unitCircle.CenterPoint);
             var c1 = new Circle(M, r1);
-            g.DrawEllipse(Pens.Black, c1.GetRectangle());
             var intersections = c1.Intersect(unitCircle);
             //any of the 2 intersections is fine, since the resulting circle will pass thru both
             var intersection1 = intersections[0];
@@ -211,34 +212,43 @@ namespace research_project
             var intercept = (-slope * A.Item1) + A.Item2;
             return new Line(slope, intercept);
         }
-
+    
+        /// <summary>
+        /// The method from the Youtube video, which I think just doesn't work
+        /// </summary>
+        /// <param name="B"></param>
+        /// <param name="unitCircle"></param>
+        /// <param name="g"></param>
+        /// <returns></returns>
         public static Circle HyperbolicBisectorFromCenter1((double, double) B, Circle unitCircle, Graphics g)
         {
-            var invertCenter = InvertCenterPoint(unitCircle, B);
             var invB = InvertPoint(B, unitCircle);
-            var line1 = EuclideanLine(unitCircle.CenterPoint, B);
-            var line2 = EuclideanLine(invertCenter, invB);
-            var intersection = line1.Intersect(line2);
-            return OrthogonalCircle(unitCircle, intersection, g);
+            var M = MidPoint(B, invB);
+            var circThruB = new Circle(unitCircle.CenterPoint, Distance(unitCircle.CenterPoint, B));
+            var circThruOrigin = new Circle(M, Distance(M, unitCircle.CenterPoint));
+            var intersections = circThruB.Intersect(circThruOrigin);
+            if (intersections.Count != 2)
+            {
+                Console.WriteLine("Intersections count was not 2, undefined behaviour could happen");
+                return new Circle((0, 0), 1);
+            }
+
+            var invFstIntersection = InvertPoint(intersections[0], unitCircle);
+            var result = CircleFromThreePoints(intersections[0], intersections[1], invFstIntersection);
+            return result;
         }
 
         public static Circle HyperbolicBisectorFromCenter2((double, double) B, Circle unitCircle, Graphics g)
         {
-            //To move the initial tile to the given point, we construct a hyperbolic bisector between
-            //the origin and the given point. Then, we invert the entire initial tile within that bisector
-            var M = GetMiddlePoint(unitCircle.CenterPoint, B);
-            var circleThruB = new Circle(unitCircle.CenterPoint, GeomUtils.Distance(unitCircle.CenterPoint, B));
-            var circleThruOrigin = new Circle(M, GeomUtils.Distance(M, unitCircle.CenterPoint));
-            g.DrawEllipse(Pens.Green, circleThruB.GetRectangle());
-            g.DrawEllipse(Pens.Green , circleThruOrigin.GetRectangle());
-            var intersections = circleThruB.Intersect(circleThruOrigin);
-            //Construct a circle that goes through both intersections and both inv(intersections)
-            //This is your hyperbolic bisector
-            var invIntersection1 = GeomUtils.InvertPoint(intersections[1], unitCircle);
-            var resultingCircle = GeomUtils.CircleFromThreePoints(intersections[0], intersections[1], invIntersection1);
-            g.DrawEllipse(Pens.Aqua, resultingCircle.GetRectangle());
-            return resultingCircle;
+            if (Distance(unitCircle.CenterPoint, B) >= unitCircle.r)
+            {
+                throw new ArithmeticException("This is not a valid point to move the intial tile to");
+            }
+            (double, double) invB = InvertPoint(B, unitCircle);
+            return OrthogonalCircle(unitCircle, invB, g);
         }
+        
+        
         
         
     }

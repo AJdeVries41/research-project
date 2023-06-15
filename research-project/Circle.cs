@@ -27,11 +27,7 @@ namespace research_project
             int r = (int) Math.Round(this.r);
             int cx = (int) Math.Round(this.CenterPoint.Item1);
             int cy = (int) Math.Round(this.CenterPoint.Item2);
-            Point bottomLeft = new Point()
-            {
-                X=cx-r,
-                Y=cy-r
-            };
+            Point bottomLeft = new Point(cx - r, cy - r);
             Size rectangleSize = new Size(2 * r, 2 * r);
             Rectangle boundingRectangle = new Rectangle(bottomLeft, rectangleSize);
             return boundingRectangle;
