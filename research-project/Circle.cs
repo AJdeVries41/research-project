@@ -11,7 +11,7 @@ namespace research_project
         public double r { get; }
         public (double, double) CenterPoint { get; }
 
-        public Circle(double r, (double, double) p)
+        public Circle((double, double) p, double r)
         {
             this.r = r;
             this.CenterPoint = p;

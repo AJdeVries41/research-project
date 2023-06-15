@@ -41,7 +41,7 @@ namespace research_project
             }
         }
 
-        public void FillTile(Graphics g)
+        public virtual void FillTile(Graphics g)
         {
             GraphicsPath gp = new GraphicsPath();
             for (int i = 0; i < this.Edges.Length; i++)

@@ -8,7 +8,7 @@ namespace research_project
     {
         protected int P { get; set; }
         protected int Q { get; set; }
-        protected Circle UnitCircle { get; set; }
+        public Circle UnitCircle { get; set; }
         
         protected Tile InitialTile;
         protected List<Tile> KnownTiles;
@@ -21,7 +21,7 @@ namespace research_project
             }
             this.P = p;
             this.Q = q;
-            this.UnitCircle = new Circle(smallestResolution / 2, (0, 0));
+            this.UnitCircle = new Circle((0, 0), smallestResolution / 2);
             this.KnownTiles = new List<Tile>();
         }
 
@@ -82,13 +82,13 @@ namespace research_project
             }
             return circles;
         }
-        
-        protected void MoveInitialTile((double, double) B)
-        {
-            //To move the initial tile to the given point, we construct a hyperbolic bisector between
-            //the origin and the given point. Then, we invert the entire initial tile within that bisector
-            
-        }
+
+        // public void MoveInitialTile((double, double) B, Graphics g)
+        // {
+        //     var invCircle = GeomUtils.HyperbolicBisector(B, this.UnitCircle, g);
+        //     Tile invertedTile = this.InitialTile.ReflectIntoEdge(invCircle);
+        //     invertedTile.DrawBounds(g);
+        // }
 
 
         public abstract void GenerateTiling();

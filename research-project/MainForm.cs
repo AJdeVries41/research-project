@@ -52,39 +52,40 @@ namespace research_project
 
             Tiling t = new HolonomyTiling(lesserScreenSize, Math.PI / 4);
             
+            
             t.GenerateTiling();
-            
-            t.DrawTiling(g);
-            
             t.FillTiling(g);
-            
-            //Draw unit circle
-            //g.DrawEllipse(Pens.Red, t.UnitCircle.GetRectangle());
-
-            var c1 = new Circle(330, (-275, 110));
-            var c2 = new Circle(100, (-20, 50));
-            
-            g.DrawEllipse(Pens.Red, c1.GetRectangle());
-            g.DrawEllipse(Pens.Red, c2.GetRectangle());
-
-            var intersections = c1.Intersect(c2);
-            foreach (var point in intersections)
-            {
-                DrawPoint(g, Brushes.Black, point);
-            }
-
-            // RegularTiling fiveFour = new RegularTiling(5, 4, lesserScreenSize, Math.PI/4);
-            //
-            // fiveFour.GenerateTiling();
-            // fiveFour.DrawTiling(g);
-
+            //t.DrawTiling(g);
+            //DrawingLab(g, t);
         }
 
-        public void DrawPoint(Graphics g, Brush b, (double, double) p)
+        public void DrawingLab(Graphics g, Tiling t)
         {
-            Point point = new Point((int) Math.Round(p.Item1), (int) Math.Round(p.Item2));
-            Rectangle r = new Rectangle(point, new Size(3, 3));
-            g.FillRectangle(b, r);
+            var B = (0, 100);
+            DrawUtils.DrawPoint(g, Brushes.Orange, B);
+            g.DrawEllipse(Pens.Red, t.UnitCircle.GetRectangle());
+            //DrawUtils.DrawPoint(g, Brushes.Orange, A);
+            //DrawUtils.DrawPoint(g, Brushes.Orange, B);
+            var res = GeomUtils.HyperbolicBisectorFromCenter2(B, t.UnitCircle, g);
+            g.DrawEllipse(Pens.Aquamarine, res.GetRectangle());
+            // g.DrawEllipse(Pens.Red, t.UnitCircle.GetRectangle());
+            // (double, double) origin = (30, 30);
+            // (double, double) B = (100, 100);
+            // t.MoveInitialTile(B, g);
+
+            // var c1 = new Circle(330, (-275, 110));
+            // var c2 = new Circle(100, (-20, 50));
+            //
+            // g.DrawEllipse(Pens.Red, c1.GetRectangle());
+            // g.DrawEllipse(Pens.Red, c2.GetRectangle());
+            //
+            // var intersections = c1.Intersect(c2);
+            // foreach (var point in intersections)
+            // {
+            //     DrawPoint(g, Brushes.Black, point);
+            // }
         }
+
+        
     }
 }

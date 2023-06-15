@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Security.Cryptography;
 using System.Security.Permissions;
+using System.Text;
 
 namespace research_project
 {
@@ -175,6 +179,28 @@ namespace research_project
             HolonomyTile reflectedTile = new HolonomyTile(newEdges, dir, newPath, hasFirstLeftOccurred, rightBeforeLeft, wasLastStepRight);
             return reflectedTile;
         }
+
+        /// <summary>
+        /// Set color of the tile based on the path
+        /// of this tile
+        /// </summary>
+        /// <param name="g"></param>
+        public override void FillTile(Graphics g)
+        {
+            GraphicsPath gp = new GraphicsPath();
+            for (int i = 0; i < this.Edges.Length; i++)
+            {
+                gp.AddArc(this.Edges[i].c.GetRectangle(), this.Edges[i].startAngleDegree, this.Edges[i].sweepAngleDegree);
+            }
+            MD5 md5 = MD5.Create();
+            byte[] input = Encoding.ASCII.GetBytes(this.path);
+            byte[] hash = md5.ComputeHash(input);
+            Color c = Color.FromArgb(hash[0], hash[1], hash[2]);
+            Brush b = new SolidBrush(c);
+            g.FillRegion(b, new Region(gp));
+        }
+        
+        
 
         public override string ToString()
         {
