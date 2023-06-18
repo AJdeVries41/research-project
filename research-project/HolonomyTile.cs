@@ -25,7 +25,7 @@ namespace research_project
         public bool WasLastStepRight;
 
         /// <summary>
-        /// Constructor for a tile that was created via reflection
+        ///
         /// </summary>
         /// <param name="edges"></param>
         /// <param name="newForwardDirection">Specifies the direction that is the forward direction for this tile</param>
@@ -74,52 +74,54 @@ namespace research_project
         /// <param name="dir">direction into which we should reflect (N, W, S, E)</param>
         /// <param name="step">which step was taken from this tile to get here (F, L, R)</param>
         /// <returns></returns>
-        public HolonomyTile ReflectIntoDirection(Direction dir, Step step)
+        public HolonomyTile ReflectIntoDirection(Direction dir, Step step, Circle unitCircle)
         {
             var newEdges = new Geodesic[this.Edges.Length];
             var reflectionCircle = this.Edges[Convert.ToInt32(dir)].c;
             //swap the start and endpoint of reflectinto, that is the new edge
             //this.Edges[Convert.ToInt32(dir)] will be an edge in the reflected tile,
-            //but with swapped start and end points. As a consqequence, the start and sweep angle will also
+            //but with swapped start and end points. As a consequence, the start and sweep angle will also
             //have to be recomputed
             var reflectInEdge = this.Edges[Convert.ToInt32(dir)];
-            var newEdge = new Geodesic(reflectionCircle, reflectInEdge.endPoint, reflectInEdge.startPoint);
+            //originalEdge = reflectInEdge with flipped start and endpoints
+            var originalEdge = new Geodesic(reflectionCircle, reflectInEdge.endPoint, reflectInEdge.startPoint);
 
-            Geodesic reflNorth = this.Edges[Convert.ToInt32(Direction.N)].ReflectAlongEdge(reflectionCircle);
-            Geodesic reflWest = this.Edges[Convert.ToInt32(Direction.W)].ReflectAlongEdge(reflectionCircle);
-            Geodesic reflSouth = this.Edges[Convert.ToInt32(Direction.S)].ReflectAlongEdge(reflectionCircle);
-            Geodesic reflEast = this.Edges[Convert.ToInt32(Direction.E)].ReflectAlongEdge(reflectionCircle);
+            Geodesic reflNorth = this.Edges[Convert.ToInt32(Direction.N)].ReflectAlongEdge(reflectionCircle, unitCircle);
+            Geodesic reflWest = this.Edges[Convert.ToInt32(Direction.W)].ReflectAlongEdge(reflectionCircle, unitCircle);
+            Geodesic reflSouth = this.Edges[Convert.ToInt32(Direction.S)].ReflectAlongEdge(reflectionCircle, unitCircle);
+            Geodesic reflEast = this.Edges[Convert.ToInt32(Direction.E)].ReflectAlongEdge(reflectionCircle, unitCircle);
             switch (dir)
             {
                 case Direction.N:
                     newEdges[Convert.ToInt32(Direction.N)] = reflSouth;
                     newEdges[Convert.ToInt32(Direction.W)] = reflWest;
-                    newEdges[Convert.ToInt32(Direction.S)] = newEdge;
+                    newEdges[Convert.ToInt32(Direction.S)] = originalEdge;
                     newEdges[Convert.ToInt32(Direction.E)] = reflEast;
                     break;
                 case Direction.W:
                     newEdges[Convert.ToInt32(Direction.N)] = reflNorth;
                     newEdges[Convert.ToInt32(Direction.W)] = reflEast;
                     newEdges[Convert.ToInt32(Direction.S)] = reflSouth;
-                    newEdges[Convert.ToInt32(Direction.E)] = newEdge;
+                    newEdges[Convert.ToInt32(Direction.E)] = originalEdge;
                     break;
                 case Direction.S:
-                    newEdges[Convert.ToInt32(Direction.N)] = newEdge;
+                    newEdges[Convert.ToInt32(Direction.N)] = originalEdge;
                     newEdges[Convert.ToInt32(Direction.W)] = reflWest;
                     newEdges[Convert.ToInt32(Direction.S)] = reflNorth;
                     newEdges[Convert.ToInt32(Direction.E)] = reflEast;
                     break;
                 case Direction.E:
                     newEdges[Convert.ToInt32(Direction.N)] = reflNorth;
-                    newEdges[Convert.ToInt32(Direction.W)] = newEdge;
+                    newEdges[Convert.ToInt32(Direction.W)] = originalEdge;
                     newEdges[Convert.ToInt32(Direction.S)] = reflSouth;
                     newEdges[Convert.ToInt32(Direction.E)] = reflWest;
                     break;
             }
-            return ConstructNextTile(newEdges, dir, step);
+            return UpdateGenerationConstraints(newEdges, dir, step);
         }
 
-        private HolonomyTile ConstructNextTile(Geodesic[] newEdges, Direction dir, Step step)
+        
+        private HolonomyTile UpdateGenerationConstraints(Geodesic[] newEdges, Direction dir, Step step)
         {
             bool hasFirstLeftOccurred;
             bool rightBeforeLeft;
@@ -194,9 +196,9 @@ namespace research_project
             g.FillRegion(b, new Region(gp));
         }
         
-        public void DrawBounds(Graphics g)
+        public void DrawBounds(Graphics g, Pen drawingPen)
         {
-             Pen drawingPen = new Pen(Brushes.Black, 1);
+            
              foreach (var geo in this.Edges)
              {
                  try

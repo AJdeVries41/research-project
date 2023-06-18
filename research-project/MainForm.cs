@@ -56,16 +56,19 @@ namespace research_project
             
             g.DrawEllipse(Pens.Red, t.UnitCircle.GetRectangle());
             
-            DrawUtils.DrawPoint(g, Brushes.Black, (250, 200));
+            //DrawUtils.DrawPoint(g, Brushes.Black, (250, 200));
 
-            t.MoveInitialTile((100, 200), g);
-            //t.InitialTile.DrawBounds(g);
+            (double, double) newCenterPoint = (300, 50);
 
-            t.GenerateTiling();
+            t.MoveInitialTile(newCenterPoint, g);
+
+            t.GenerateTiling(400);
            
             //t.KnownTiles[0].FillTile(g);
             t.FillTiling(g);
-            t.DrawTiling(g);
+            t.DrawTiling(g, Color.Black, 3);
+            
+            DrawUtils.DrawPoint(g, Brushes.Purple, newCenterPoint);
             
             //DrawingLab(g, t);
         }

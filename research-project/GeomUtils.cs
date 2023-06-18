@@ -126,24 +126,6 @@ namespace research_project
             return (invX, invY);
         }
 
-        /// <summary>
-        /// You cannot invert a centerpoint directly. So this method constructs a point in the direction of point inDirection
-        /// Which is a really small distance away from the centerpoint
-        /// </summary>
-        /// <param name="c"></param>
-        /// <param name="inDirection"></param>
-        /// <returns></returns>
-        public static (double, double) InvertCenterPoint(Circle c, (double, double) inDirection)
-        {
-            var dy = inDirection.Item2 - c.CenterPoint.Item2;
-            var dx = inDirection.Item1 - c.CenterPoint.Item1;
-            var EPSILON = 0.01;
-            var toInvert = (c.CenterPoint.Item1 + EPSILON * dx, c.CenterPoint.Item2 + EPSILON * dy);
-            return InvertPoint(toInvert, c);
-        }
-        
-        
-
         public static Circle CircleFromThreePoints((double, double) p1, (double, double) p2, (double, double) p3)
         {
             double a = p1.Item1;

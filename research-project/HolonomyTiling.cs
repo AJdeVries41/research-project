@@ -51,13 +51,11 @@ namespace research_project
         
         
         
-        public void GenerateTiling()
+        public void GenerateTiling(int numDesiredTiles = 100)
         {
             Direction[] dirs = { Direction.N, Direction.W, Direction.S, Direction.E };
             Step[] steps = { Step.F, Step.L, Step.R };
             
-            
-            int NUM_DESIRED_TILES = 100;
             int generatedTiles = 0;
             Queue<HolonomyTile> q = new Queue<HolonomyTile>();
 
@@ -66,14 +64,14 @@ namespace research_project
             generatedTiles += 1;
             foreach (var dir in dirs)
             {
-                HolonomyTile reflectedTile = initial.ReflectIntoDirection(dir, Step.DC);
+                HolonomyTile reflectedTile = initial.ReflectIntoDirection(dir, Step.DC, this.UnitCircle);
                 q.Enqueue(reflectedTile);
                 this.KnownTiles.Add(reflectedTile);
             }
             generatedTiles += 4;
             
             // //Now we somehow have to generate only Forward, Left and Right tiles iff that is allowed according to the underlying graph
-            while (q.Count != 0 && generatedTiles < NUM_DESIRED_TILES)
+            while (q.Count != 0 && generatedTiles < numDesiredTiles)
             {
                 HolonomyTile current = q.Dequeue();
                 Direction currentForwardDir = current.CurrentForwardDirection;
@@ -88,7 +86,7 @@ namespace research_project
                     {
                         //Direction reflectIn = this.stepToDirection[currentForwardDir, step];
                         Direction reflectIn = ConvertStepToDirection(step, currentForwardDir);
-                        HolonomyTile reflectedTile = current.ReflectIntoDirection(reflectIn, step);
+                        HolonomyTile reflectedTile = current.ReflectIntoDirection(reflectIn, step, this.UnitCircle);
                         generatedTiles++;
                         this.KnownTiles.Add(reflectedTile);
                         q.Enqueue(reflectedTile);
@@ -143,25 +141,6 @@ namespace research_project
             return result;
         }
 
-        protected List<Circle> CalculateInitialCircles(List<(double, double)> initialPoints)
-        {
-            List<Circle> circles = new List<Circle>();
-            //for each pair of adjacent points
-            int j = 1;
-            for (int i = 0; i < initialPoints.Count; i++)
-            {
-                (double, double) inversion = GeomUtils.InvertPoint(initialPoints[i], UnitCircle);
-                Circle connectingCircle = GeomUtils.CircleFromThreePoints(inversion, initialPoints[i], initialPoints[j]);
-                circles.Add(connectingCircle);
-                j++;
-                if (j == initialPoints.Count)
-                {
-                    j = 0;
-                }
-            }
-            return circles;
-        }
-
         public void MoveInitialTile((double, double) B, Graphics g)
         {
             var invCircle = GeomUtils.HyperbolicBisectorFromCenter(B, this.UnitCircle, g);
@@ -176,14 +155,15 @@ namespace research_project
             this.InitialPoints = newInitialPoints;
         }
 
-        public void DrawTiling(Graphics g)
+        public void DrawTiling(Graphics g, Color c, int width)
         {
             //Draw unit circle
             g.DrawEllipse(Pens.Red, this.UnitCircle.GetRectangle());
+            Pen drawingPen = new Pen(c, width);
             //Draw each known tile
             foreach (var tile in this.KnownTiles)
             {
-                tile.DrawBounds(g);
+                tile.DrawBounds(g, drawingPen);
             }
         }
 

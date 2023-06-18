@@ -17,18 +17,31 @@ namespace research_project
             this.CenterPoint = p;
         }
 
-        /// <summary>
-        /// Computes the bounding rectangle of this circle, i.e. the rectangle such that the circle touches
-        /// (and does not cross) this rectangle
-        /// </summary>
-        /// <returns></returns>
+        // /// <summary>
+        // /// Computes the bounding rectangle of this circle, i.e. the rectangle such that the circle touches
+        // /// (and does not cross) this rectangle
+        // /// </summary>
+        // /// <returns></returns>
+        // public Rectangle GetRectangle()
+        // {
+        //     int r = (int) Math.Round(this.r);
+        //     int cx = (int) Math.Round(this.CenterPoint.Item1);
+        //     int cy = (int) Math.Round(this.CenterPoint.Item2);
+        //     Point bottomLeft = new Point(cx - r, cy - r);
+        //     Size rectangleSize = new Size(2 * r, 2 * r);
+        //     Rectangle boundingRectangle = new Rectangle(bottomLeft, rectangleSize);
+        //     return boundingRectangle;
+        // }
+
         public Rectangle GetRectangle()
         {
-            int r = (int) Math.Round(this.r);
-            int cx = (int) Math.Round(this.CenterPoint.Item1);
-            int cy = (int) Math.Round(this.CenterPoint.Item2);
-            Point bottomLeft = new Point(cx - r, cy - r);
-            Size rectangleSize = new Size(2 * r, 2 * r);
+            double bottomLeftX = this.CenterPoint.Item1 - this.r;
+            double bottomLeftY = this.CenterPoint.Item2 - this.r;
+            int intBottomLeftX = Convert.ToInt32(bottomLeftX);
+            int intBottomLeftY = Convert.ToInt32(bottomLeftY);
+            int rectangleEdgeLength = Convert.ToInt32(2 * this.r);
+            Point bottomLeft = new Point(intBottomLeftX, intBottomLeftY);
+            Size rectangleSize = new Size(rectangleEdgeLength, rectangleEdgeLength);
             Rectangle boundingRectangle = new Rectangle(bottomLeft, rectangleSize);
             return boundingRectangle;
         }
