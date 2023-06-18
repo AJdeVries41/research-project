@@ -16,6 +16,8 @@ namespace research_project
 {
     public partial class MainForm : Form
     {
+        private (double, double) newOriginPoint = (0, 0);
+        private double EPSILON = 0.0001;
         public MainForm()
         {
             InitializeComponent();
@@ -28,6 +30,8 @@ namespace research_project
             this.WindowState = FormWindowState.Maximized;
             //To make sure that the entire image is redrawn whenever the window is resized
             this.ResizeRedraw = true;
+            this.KeyPreview = true;
+            this.KeyDown += new KeyEventHandler(MainForm_KeyDown);
         }
         
         //This is to be able to use the console while running the application
@@ -51,26 +55,53 @@ namespace research_project
             //y-axis.
 
             var lesserScreenSize = Math.Min(this.ClientSize.Width, this.ClientSize.Height);
-
             HolonomyTiling t = new HolonomyTiling(lesserScreenSize, Math.PI / 4);
-            
             g.DrawEllipse(Pens.Red, t.UnitCircle.GetRectangle());
+
+            if (!GeomUtils.NearlyEqual(GeomUtils.Distance(newOriginPoint, (0, 0)), 0))
+            {
+                //then move the origin to the newOriginPoint
+                t.MoveInitialTile(this.newOriginPoint, g);
+            }
             
-            //DrawUtils.DrawPoint(g, Brushes.Black, (250, 200));
-
-            (double, double) newCenterPoint = (300, 50);
-
-            t.MoveInitialTile(newCenterPoint, g);
-
-            t.GenerateTiling(400);
+            t.GenerateTiling(100);
            
             //t.KnownTiles[0].FillTile(g);
             t.FillTiling(g);
             t.DrawTiling(g, Color.Black, 3);
             
-            DrawUtils.DrawPoint(g, Brushes.Purple, newCenterPoint);
+            DrawUtils.DrawPoint(g, Brushes.Purple, this.newOriginPoint);
             
-            //DrawingLab(g, t);
+        }
+
+
+        protected void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Up)
+            {
+                Console.WriteLine("Moving centerpoint down");
+                this.newOriginPoint.Item2 += -10.0;
+            }
+            else if (e.KeyCode == Keys.Down)
+            {
+                Console.WriteLine("Moving centerpoint up");
+                this.newOriginPoint.Item2 += 10.0;
+            }
+            else if (e.KeyCode == Keys.Right)
+            {
+                Console.WriteLine("Moving centerpoint left");
+                this.newOriginPoint.Item1 += -10.0;
+            }
+            else if (e.KeyCode == Keys.Left)
+            {
+                Console.WriteLine("Moving centerpoint right");
+                this.newOriginPoint.Item1 += 10.0;
+            }
+            else if (e.KeyCode == Keys.Enter)
+            {
+                Console.WriteLine("Redrawing image");
+                this.Refresh();
+            }
         }
 
         public void DrawingLab(Graphics g, HolonomyTiling t)

@@ -213,6 +213,12 @@ namespace research_project
             {
                 throw new ArithmeticException("This is not a valid point to move the intial tile to");
             }
+
+            double EPSILON = 0.0001;
+            if (Distance(unitCircle.CenterPoint, B) <= EPSILON)
+            {
+                throw new ArithmeticException("Cannot construct a hyperbolic bisector for the centerpoint itself");
+            }
             (double, double) invB = InvertPoint(B, unitCircle);
             return OrthogonalCircle(unitCircle, invB, g);
         }
