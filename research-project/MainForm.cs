@@ -79,29 +79,21 @@ namespace research_project
         {
             if (e.KeyCode == Keys.Up)
             {
-                Console.WriteLine("Moving centerpoint down");
                 this.newOriginPoint.Item2 += -10.0;
             }
             else if (e.KeyCode == Keys.Down)
             {
-                Console.WriteLine("Moving centerpoint up");
                 this.newOriginPoint.Item2 += 10.0;
             }
             else if (e.KeyCode == Keys.Right)
             {
-                Console.WriteLine("Moving centerpoint left");
                 this.newOriginPoint.Item1 += -10.0;
             }
             else if (e.KeyCode == Keys.Left)
             {
-                Console.WriteLine("Moving centerpoint right");
                 this.newOriginPoint.Item1 += 10.0;
             }
-            else if (e.KeyCode == Keys.Enter)
-            {
-                Console.WriteLine("Redrawing image");
-                this.Refresh();
-            }
+            this.Refresh();
         }
 
         public void DrawingLab(Graphics g, HolonomyTiling t)
