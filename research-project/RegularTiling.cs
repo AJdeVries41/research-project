@@ -32,7 +32,7 @@
 //                 Tile current = q.Dequeue();
 //                 for (int i = 0; i < current.Edges.Length; i++)
 //                 {
-//                     Tile reflectedTile = current.ReflectIntoEdge(current.Edges[i].c);
+//                     Tile reflectedTile = current.ReflectAlongEdge(current.Edges[i].c);
 //                     this.KnownTiles.Add(reflectedTile);
 //                     q.Enqueue(reflectedTile);
 //                 }

@@ -18,7 +18,7 @@ namespace research_project
         }
 
         /// <summary>
-        /// Computes the bounding rectangle of this circle, i.e. the rectangle such that the courcles touches
+        /// Computes the bounding rectangle of this circle, i.e. the rectangle such that the circle touches
         /// (and does not cross) this rectangle
         /// </summary>
         /// <returns></returns>

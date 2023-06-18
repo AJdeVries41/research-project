@@ -24,6 +24,8 @@ namespace research_project
         private void Form1_Load(object sender, EventArgs e)
         {
             AllocConsole();
+            //Maximizes the window on startup.
+            this.WindowState = FormWindowState.Maximized;
             //To make sure that the entire image is redrawn whenever the window is resized
             this.ResizeRedraw = true;
         }
@@ -53,13 +55,17 @@ namespace research_project
             HolonomyTiling t = new HolonomyTiling(lesserScreenSize, Math.PI / 4);
             
             g.DrawEllipse(Pens.Red, t.UnitCircle.GetRectangle());
+            
+            DrawUtils.DrawPoint(g, Brushes.Black, (250, 200));
 
-            t.MoveInitialTile((200, 30), g);
-            t.InitialTile.DrawBounds(g);
+            //t.MoveInitialTile((250, 200), g);
+            //t.InitialTile.DrawBounds(g);
 
             t.GenerateTiling();
+           
+            //t.KnownTiles[0].FillTile(g);
             t.FillTiling(g);
-            t.DrawTiling(g);
+            //t.DrawTiling(g);
             
             //DrawingLab(g, t);
         }

@@ -144,7 +144,6 @@ namespace research_project
         
         
 
-
         public static Circle CircleFromThreePoints((double, double) p1, (double, double) p2, (double, double) p3)
         {
             double a = p1.Item1;
@@ -182,6 +181,12 @@ namespace research_project
             double r = Math.Sqrt(Math.Pow(a - centerX, 2) + Math.Pow(b - centerY, 2));
 
             return new Circle((centerX, centerY), r);
+        }
+
+        public static Circle CircleBetweenPointsInDisk((double, double) a, (double, double) b, Circle unitCircle)
+        {
+            (double, double) invA = InvertPoint(a, unitCircle);
+            return CircleFromThreePoints(a, b, invA);
         }
         
         /// <summary>

@@ -17,7 +17,13 @@ namespace research_project
 
         public float startAngleDegree;
         public float sweepAngleDegree;
-        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="c">The circle of which this geodesic is part of</param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
         public Geodesic(Circle c, (double, double) start, (double, double) end)
         {
             this.c = c;
@@ -86,11 +92,11 @@ namespace research_project
         }
         
         /// <summary>
-        /// Reflects this edge into another edge represented by the reflectionCircle of that edge
+        /// Reflects this edge along another edge represented by the reflectionCircle of that edge
         /// </summary>
         /// <param name="reflectionCircle"></param>
         /// <returns>A new edge that is reflected into the other edge</returns>
-        public Geodesic ReflectIntoEdge(Circle reflectionCircle)
+        public Geodesic ReflectAlongEdge(Circle reflectionCircle)
         {
             (double, double) midPoint = GenerateMidPoint();
 

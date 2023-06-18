@@ -16,7 +16,7 @@ namespace research_project
         private static readonly int[,] StepToDirection = new int[4, 3] { { 0, 1, 3 }, { 1, 2, 0 }, { 2, 3, 1 }, { 3, 0, 2 } };
         public Circle UnitCircle { get; set; }
         public HolonomyTile InitialTile;
-        protected List<HolonomyTile> KnownTiles;
+        public List<HolonomyTile> KnownTiles;
         
 
         public HolonomyTiling(int smallestResolution, double initialRotation)
@@ -146,10 +146,17 @@ namespace research_project
             HolonomyTile initial = this.InitialTile;
             var invCircle = GeomUtils.HyperbolicBisectorFromCenter2(B, this.UnitCircle, g);
             var newEdges = new Geodesic[initial.Edges.Length];
+            //iterate thru the initial points of the tiling
             for (int i = 0; i < initial.Edges.Length; i++)
             {
-                Geodesic reflection = initial.Edges[i].ReflectIntoEdge(invCircle);
-                newEdges[i] = reflection;
+                (double, double) startPoint = initial.Edges[i].startPoint;
+                (double, double) endPoint = initial.Edges[i].endPoint;
+                (double, double) reflStartPoint = GeomUtils.InvertPoint(startPoint, invCircle);
+                (double, double) reflEndPoint = GeomUtils.InvertPoint(endPoint, invCircle);
+                Circle connectingCircle =
+                    GeomUtils.CircleBetweenPointsInDisk(reflStartPoint, reflEndPoint, this.UnitCircle);
+                Geodesic newEdge = new Geodesic(connectingCircle, reflStartPoint, reflEndPoint);
+                newEdges[i] = newEdge;
             }
             this.InitialTile = new HolonomyTile(newEdges, Direction.O, "", false, false, false);
         }

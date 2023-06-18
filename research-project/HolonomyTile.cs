@@ -104,10 +104,10 @@ namespace research_project
             var reflectInEdge = this.Edges[Convert.ToInt32(dir)];
             var newEdge = new Geodesic(reflectionCircle, reflectInEdge.endPoint, reflectInEdge.startPoint);
 
-            Geodesic reflNorth = this.Edges[Convert.ToInt32(Direction.N)].ReflectIntoEdge(reflectionCircle);
-            Geodesic reflWest = this.Edges[Convert.ToInt32(Direction.W)].ReflectIntoEdge(reflectionCircle);
-            Geodesic reflSouth = this.Edges[Convert.ToInt32(Direction.S)].ReflectIntoEdge(reflectionCircle);
-            Geodesic reflEast = this.Edges[Convert.ToInt32(Direction.E)].ReflectIntoEdge(reflectionCircle);
+            Geodesic reflNorth = this.Edges[Convert.ToInt32(Direction.N)].ReflectAlongEdge(reflectionCircle);
+            Geodesic reflWest = this.Edges[Convert.ToInt32(Direction.W)].ReflectAlongEdge(reflectionCircle);
+            Geodesic reflSouth = this.Edges[Convert.ToInt32(Direction.S)].ReflectAlongEdge(reflectionCircle);
+            Geodesic reflEast = this.Edges[Convert.ToInt32(Direction.E)].ReflectAlongEdge(reflectionCircle);
             switch (dir)
             {
                 case Direction.N:
@@ -216,7 +216,17 @@ namespace research_project
             GraphicsPath gp = new GraphicsPath();
             for (int i = 0; i < this.Edges.Length; i++)
             {
-                gp.AddArc(this.Edges[i].c.GetRectangle(), this.Edges[i].startAngleDegree, this.Edges[i].sweepAngleDegree);
+                try
+                {
+                    gp.AddArc(this.Edges[i].c.GetRectangle(), this.Edges[i].startAngleDegree,
+                        this.Edges[i].sweepAngleDegree);
+                }
+                catch (ArgumentException e)
+                {
+                    Console.WriteLine($"Got argument exception for tile {this.ToString()}");
+                    //Don't try to give this tile a color then I suppose...
+                    return;
+                }
             }
             MD5 md5 = MD5.Create();
             byte[] input = Encoding.ASCII.GetBytes(this.path);
@@ -231,9 +241,15 @@ namespace research_project
              Pen drawingPen = new Pen(Brushes.Black, 1);
              foreach (var geo in this.Edges)
              {
-                 if (geo != null)
+                 try
                  {
                      g.DrawArc(drawingPen,geo.c.GetRectangle(), geo.startAngleDegree, geo.sweepAngleDegree);
+                 }
+                 catch (ArgumentException e)
+                 {
+                     Console.WriteLine($"Got argument exception for tile {this.ToString()}");
+                     //Don't try to draw this tile then I suppose...
+                     return;
                  }
              }
         }

@@ -41,8 +41,8 @@ namespace research_project_tests
         //     Geodesic topEdge = initial.Edges[0];
         //     
         //     //Reflecting twice in an edge should result in the original tile
-        //     Tile reflection = initial.ReflectIntoEdge(topEdge);
-        //     Tile reflectTwice = reflection.ReflectIntoEdge(topEdge);
+        //     Tile reflection = initial.ReflectAlongEdge(topEdge);
+        //     Tile reflectTwice = reflection.ReflectAlongEdge(topEdge);
         //
         //     for (int i = 0; i < initial.Edges.Length; i++)
         //     {
