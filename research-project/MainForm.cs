@@ -58,14 +58,14 @@ namespace research_project
             
             DrawUtils.DrawPoint(g, Brushes.Black, (250, 200));
 
-            //t.MoveInitialTile((250, 200), g);
+            t.MoveInitialTile((100, 200), g);
             //t.InitialTile.DrawBounds(g);
 
             t.GenerateTiling();
            
             //t.KnownTiles[0].FillTile(g);
             t.FillTiling(g);
-            //t.DrawTiling(g);
+            t.DrawTiling(g);
             
             //DrawingLab(g, t);
         }
@@ -78,7 +78,7 @@ namespace research_project
             var invB = GeomUtils.InvertPoint(B, t.UnitCircle);
             DrawUtils.DrawPoint(g, Brushes.Orange, B);
             DrawUtils.DrawPoint(g, Brushes.Purple, invB);
-            var bisector = GeomUtils.HyperbolicBisectorFromCenter2(B, t.UnitCircle, g);
+            var bisector = GeomUtils.HyperbolicBisectorFromCenter(B, t.UnitCircle, g);
             g.DrawEllipse(Pens.Aquamarine, bisector.GetRectangle());
             
         }

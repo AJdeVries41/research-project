@@ -23,26 +23,7 @@ namespace research_project
         public bool RightBeforeLeft;
         //Was the last step a right step?
         public bool WasLastStepRight;
-        
-        /// <summary>
-        /// Constructor for the initial tile
-        /// For a HolonomyTile, it holds that Edges[0] = top edge,
-        /// Edges[1] = left edge
-        /// Edges[2] = bottom edge
-        /// Edges[3] = right edge
-        /// </summary>
-        /// <param name="points"></param>
-        /// <param name="circles"></param>
-        public HolonomyTile(List<(double, double)> points, List<Circle> circles)
-        {
-            this.ConstructInitialEdges(points, circles);
-            this.CurrentForwardDirection = Direction.O;
-            this.path = "";
-            this.HasFirstLeftOccurred = false;
-            this.RightBeforeLeft = false;
-            this.WasLastStepRight = false;
-        }
-        
+
         /// <summary>
         /// Constructor for a tile that was created via reflection
         /// </summary>
@@ -182,29 +163,6 @@ namespace research_project
             HolonomyTile reflectedTile = new HolonomyTile(newEdges, dir, newPath, hasFirstLeftOccurred, rightBeforeLeft, wasLastStepRight);
             return reflectedTile;
         }
-        
-        private void ConstructInitialEdges(List<(double, double)> points, List<Circle> circles)
-        {
-             this.Edges = new Geodesic[points.Count];
-             int j = 1;
-             for (int i = 0; i < points.Count; i++)
-             {
-                 Circle c = circles[i];
-                 
-                 var start = points[i];
-                 var dest = points[j];
-
-                 Geodesic edge = new Geodesic(c, start, dest);
-                 this.Edges[i] = edge;
-                 
-                 j++;
-                 if (j == points.Count)
-                 {
-                     j = 0;
-                 }
-                 
-             }
-         }
 
         /// <summary>
         /// Set color of the tile based on the path

@@ -15,7 +15,7 @@ namespace research_project
         public int Q;
         private static readonly int[,] StepToDirection = new int[4, 3] { { 0, 1, 3 }, { 1, 2, 0 }, { 2, 3, 1 }, { 3, 0, 2 } };
         public Circle UnitCircle { get; set; }
-        public HolonomyTile InitialTile;
+        public List<(double, double)> InitialPoints;
         public List<HolonomyTile> KnownTiles;
         
 
@@ -25,10 +25,28 @@ namespace research_project
             this.Q = 5;
             this.UnitCircle = new Circle((0, 0), smallestResolution / 2);
             int d = CalculateInitialDistance(smallestResolution);
-            var initialPoints = this.CalculateInitialPoints(d, initialRotation);
-            var initialCircles = this.CalculateInitialCircles(initialPoints);
-            this.InitialTile = new HolonomyTile(initialPoints, initialCircles);
+            this.InitialPoints = this.CalculateInitialPoints(d, initialRotation);
             this.KnownTiles = new List<HolonomyTile>();
+        }
+
+        public HolonomyTile GenerateInitialTile()
+        {
+            Geodesic[] edges = new Geodesic[this.InitialPoints.Count];
+            int j = 1;
+            for (int i = 0; i < this.InitialPoints.Count; i++)
+            {
+                (double, double) fromPoint = this.InitialPoints[i];
+                (double, double) toPoint = this.InitialPoints[j];
+                Circle connectingCircle = GeomUtils.CircleBetweenPointsInDisk(fromPoint, toPoint, this.UnitCircle);
+                Geodesic edge = new Geodesic(connectingCircle, fromPoint, toPoint);
+                edges[i] = edge;
+                j++;
+                if (j == this.InitialPoints.Count)
+                {
+                    j = 0;
+                }
+            }
+            return new HolonomyTile(edges, Direction.O, "", false, false, false);
         }
         
         
@@ -38,18 +56,21 @@ namespace research_project
             Direction[] dirs = { Direction.N, Direction.W, Direction.S, Direction.E };
             Step[] steps = { Step.F, Step.L, Step.R };
             
-            this.KnownTiles.Add(this.InitialTile);
+            
             int NUM_DESIRED_TILES = 100;
             int generatedTiles = 0;
             Queue<HolonomyTile> q = new Queue<HolonomyTile>();
-            HolonomyTile initial = this.InitialTile;
 
+            HolonomyTile initial = this.GenerateInitialTile();
+            this.KnownTiles.Add(initial);
+            generatedTiles += 1;
             foreach (var dir in dirs)
             {
                 HolonomyTile reflectedTile = initial.ReflectIntoDirection(dir, Step.DC);
                 q.Enqueue(reflectedTile);
                 this.KnownTiles.Add(reflectedTile);
             }
+            generatedTiles += 4;
             
             // //Now we somehow have to generate only Forward, Left and Right tiles iff that is allowed according to the underlying graph
             while (q.Count != 0 && generatedTiles < NUM_DESIRED_TILES)
@@ -143,22 +164,16 @@ namespace research_project
 
         public void MoveInitialTile((double, double) B, Graphics g)
         {
-            HolonomyTile initial = this.InitialTile;
-            var invCircle = GeomUtils.HyperbolicBisectorFromCenter2(B, this.UnitCircle, g);
-            var newEdges = new Geodesic[initial.Edges.Length];
+            var invCircle = GeomUtils.HyperbolicBisectorFromCenter(B, this.UnitCircle, g);
+            var newInitialPoints = new List<(double, double)>();
+            
             //iterate thru the initial points of the tiling
-            for (int i = 0; i < initial.Edges.Length; i++)
+            for (int i = 0; i < this.InitialPoints.Count; i++)
             {
-                (double, double) startPoint = initial.Edges[i].startPoint;
-                (double, double) endPoint = initial.Edges[i].endPoint;
-                (double, double) reflStartPoint = GeomUtils.InvertPoint(startPoint, invCircle);
-                (double, double) reflEndPoint = GeomUtils.InvertPoint(endPoint, invCircle);
-                Circle connectingCircle =
-                    GeomUtils.CircleBetweenPointsInDisk(reflStartPoint, reflEndPoint, this.UnitCircle);
-                Geodesic newEdge = new Geodesic(connectingCircle, reflStartPoint, reflEndPoint);
-                newEdges[i] = newEdge;
+                (double, double) invPoint = GeomUtils.InvertPoint(this.InitialPoints[i], invCircle);
+                newInitialPoints.Add(invPoint);
             }
-            this.InitialTile = new HolonomyTile(newEdges, Direction.O, "", false, false, false);
+            this.InitialPoints = newInitialPoints;
         }
 
         public void DrawTiling(Graphics g)

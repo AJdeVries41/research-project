@@ -183,6 +183,13 @@ namespace research_project
             return new Circle((centerX, centerY), r);
         }
 
+        /// <summary>
+        /// Shorthand for computing the line between 2 points in the Poincaré disk
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="unitCircle"></param>
+        /// <returns></returns>
         public static Circle CircleBetweenPointsInDisk((double, double) a, (double, double) b, Circle unitCircle)
         {
             (double, double) invA = InvertPoint(a, unitCircle);
@@ -217,33 +224,8 @@ namespace research_project
             var intercept = (-slope * A.Item1) + A.Item2;
             return new Line(slope, intercept);
         }
-    
-        /// <summary>
-        /// The method from the Youtube video, which I think just doesn't work
-        /// </summary>
-        /// <param name="B"></param>
-        /// <param name="unitCircle"></param>
-        /// <param name="g"></param>
-        /// <returns></returns>
-        public static Circle HyperbolicBisectorFromCenter1((double, double) B, Circle unitCircle, Graphics g)
-        {
-            var invB = InvertPoint(B, unitCircle);
-            var M = MidPoint(B, invB);
-            var circThruB = new Circle(unitCircle.CenterPoint, Distance(unitCircle.CenterPoint, B));
-            var circThruOrigin = new Circle(M, Distance(M, unitCircle.CenterPoint));
-            var intersections = circThruB.Intersect(circThruOrigin);
-            if (intersections.Count != 2)
-            {
-                Console.WriteLine("Intersections count was not 2, undefined behaviour could happen");
-                return new Circle((0, 0), 1);
-            }
 
-            var invFstIntersection = InvertPoint(intersections[0], unitCircle);
-            var result = CircleFromThreePoints(intersections[0], intersections[1], invFstIntersection);
-            return result;
-        }
-
-        public static Circle HyperbolicBisectorFromCenter2((double, double) B, Circle unitCircle, Graphics g)
+        public static Circle HyperbolicBisectorFromCenter((double, double) B, Circle unitCircle, Graphics g)
         {
             if (Distance(unitCircle.CenterPoint, B) >= unitCircle.r)
             {
