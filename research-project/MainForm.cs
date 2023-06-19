@@ -57,7 +57,7 @@ namespace research_project
             var lesserScreenSize = Math.Min(this.ClientSize.Width, this.ClientSize.Height);
             HolonomyTiling t = new HolonomyTiling(lesserScreenSize, Math.PI / 4);
             g.DrawEllipse(Pens.Red, t.UnitCircle.GetRectangle());
-
+            
             if (!GeomUtils.NearlyEqual(GeomUtils.Distance(newOriginPoint, (0, 0)), 0))
             {
                 //then move the origin to the newOriginPoint

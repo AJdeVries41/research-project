@@ -74,7 +74,6 @@ namespace research_project
             while (q.Count != 0 && generatedTiles < numDesiredTiles)
             {
                 HolonomyTile current = q.Dequeue();
-                Direction currentForwardDir = current.CurrentForwardDirection;
                 //Reflect the tile into each of the "steps" which are currently allowed
                 foreach (var step in steps)
                 {
@@ -85,7 +84,7 @@ namespace research_project
                     else
                     {
                         //Direction reflectIn = this.stepToDirection[currentForwardDir, step];
-                        Direction reflectIn = ConvertStepToDirection(step, currentForwardDir);
+                        Direction reflectIn = ConvertStepToDirection(step, current.CurrentForwardDirection);
                         HolonomyTile reflectedTile = current.ReflectIntoDirection(reflectIn, step, this.UnitCircle);
                         generatedTiles++;
                         this.KnownTiles.Add(reflectedTile);

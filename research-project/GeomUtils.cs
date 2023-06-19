@@ -38,12 +38,6 @@ namespace research_project
             return (sumX / 2, sumY / 2);
         }
 
-        public static Circle CircleWithCenterThroughPoint((double, double) center, (double, double) p)
-        {
-            var dist = Distance(center, p);
-            return new Circle(center, dist);
-        }
-
         public static (double, double) AddPoints((double, double) p1, (double, double) p2)
         {
             return (p1.Item1 + p2.Item1, p1.Item2 + p2.Item2);
@@ -63,35 +57,14 @@ namespace research_project
             var pX = p.Item1;
             var pY = p.Item2;
             var phi = Math.Atan2(pY - cY, pX - cX);
-            return AngleConverter(phi);
-        }
-        
-        //Converts an angle like -PI/4 to 7*PI/4
-        //Positive angles remain the same
-        public static double AngleConverter(double angle)
-        {
-            if (angle < 0)
+            if (phi < 0)
             {
-                return (2 * Math.PI) - Math.Abs(angle);
+                return (2 * Math.PI) - Math.Abs(phi);
             }
 
-            return angle;
+            return phi;
         }
 
-        /// <summary>
-        /// Given a circle c and angle, convert that to Euclidean coordinates
-        /// </summary>
-        /// <param name="c"></param>
-        /// <param name="angle"></param>
-        /// <returns></returns>
-        public static (double, double) ConvertFromPolar(Circle c, double angle)
-        {
-            double r = c.r;
-            double centerToX = r * Math.Cos(angle);
-            double centerToY = r * Math.Sin(angle);
-            return AddPoints(c.CenterPoint, (centerToX, centerToY));
-        }
-        
         //see https://www.malinc.se/noneuclidean/en/circleinversion.php
         //Takes a point inside a circle and returns a point outside of the circle
         public static (double, double) InvertPoint((double, double) point, Circle c)
@@ -196,15 +169,6 @@ namespace research_project
             var desiredR = GeomUtils.Distance(A, intersection1);
             var desiredCircle = new Circle(A, desiredR);
             return desiredCircle;
-        }
-
-        public static Line EuclideanLine((double, double) A, (double, double) B)
-        {
-            var dy = B.Item2 - A.Item2;
-            var dx = B.Item1 - A.Item1;
-            var slope = dy / dx;
-            var intercept = (-slope * A.Item1) + A.Item2;
-            return new Line(slope, intercept);
         }
 
         public static Circle HyperbolicBisectorFromCenter((double, double) B, Circle unitCircle, Graphics g)

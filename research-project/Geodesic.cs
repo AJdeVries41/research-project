@@ -68,29 +68,6 @@ namespace research_project
             return (float) ((180/Math.PI) * sweepAngle);
         }
 
-        private (double, double) GenerateMidPoint()
-        {
-            double startAngleRad = GeomUtils.ConvertToPolar(this.c, this.startPoint);
-            double endAngleRad = GeomUtils.ConvertToPolar(this.c, this.endPoint);
-
-            var minAngle = Math.Min(startAngleRad, endAngleRad);
-            var maxAngle = Math.Max(startAngleRad, endAngleRad);
-            double diffAngleRad;
-            if ((maxAngle - minAngle) > Math.PI)
-            {
-                (minAngle, maxAngle) = (maxAngle, minAngle);
-                diffAngleRad = (maxAngle + 2 * Math.PI) - minAngle;
-            }
-            else
-            {
-                diffAngleRad = maxAngle - minAngle;
-            }
-
-            var midAngleRad = startAngleRad + (diffAngleRad / 2);
-            (double, double) midPoint = GeomUtils.ConvertFromPolar(this.c, midAngleRad);
-            return midPoint;
-        }
-        
         /// <summary>
         /// Reflects this edge along another edge represented by the reflectionCircle of that edge
         /// </summary>
