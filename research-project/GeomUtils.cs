@@ -38,11 +38,6 @@ namespace research_project
             return (sumX / 2, sumY / 2);
         }
 
-        public static (double, double) AddPoints((double, double) p1, (double, double) p2)
-        {
-            return (p1.Item1 + p2.Item1, p1.Item2 + p2.Item2);
-        }
-        
         /// <summary>
         /// Convert a point on the circle c to the angle phi from the centerpoint of c
         /// The angle returned is always in the domain [0,2pi]

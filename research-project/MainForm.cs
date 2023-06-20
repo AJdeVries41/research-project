@@ -55,7 +55,7 @@ namespace research_project
             //y-axis.
 
             var lesserScreenSize = Math.Min(this.ClientSize.Width, this.ClientSize.Height);
-            HolonomyTiling t = new HolonomyTiling(lesserScreenSize, Math.PI / 4);
+            HolonomyTiling t = new HolonomyTiling(lesserScreenSize, Math.PI/4);
             g.DrawEllipse(Pens.Red, t.UnitCircle.GetRectangle());
             
             if (!GeomUtils.NearlyEqual(GeomUtils.Distance(newOriginPoint, (0, 0)), 0))
@@ -64,7 +64,7 @@ namespace research_project
                 t.MoveInitialTile(this.newOriginPoint, g);
             }
             
-            t.GenerateTiling(3);
+            t.GenerateTiling(100);
            
             //t.KnownTiles[0].FillTile(g);
             t.FillTiling(g);

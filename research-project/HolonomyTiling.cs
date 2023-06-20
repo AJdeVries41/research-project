@@ -53,33 +53,34 @@ namespace research_project
         
         public void GenerateTiling(int numDesiredTiles = 100)
         {
+            if (numDesiredTiles <= 0)
+            {
+                throw new ArgumentException("Need to generate at least 1 tile");
+            }
             Direction[] dirs = { Direction.N, Direction.W, Direction.S, Direction.E };
             Step[] steps = { Step.F, Step.L, Step.R };
             
-            int generatedTiles = 0;
             Queue<HolonomyTile> q = new Queue<HolonomyTile>();
 
             HolonomyTile initial = this.GenerateInitialTile();
             this.KnownTiles.Add(initial);
-            generatedTiles++;
-            if (generatedTiles == numDesiredTiles)
+            if (this.KnownTiles.Count == numDesiredTiles)
             {
                 return;
             }
             foreach (var dir in dirs)
             {
-                HolonomyTile reflectedTile = initial.ReflectIntoDirection(dir, Step.Dc, this.UnitCircle);
+                HolonomyTile reflectedTile = initial.ReflectIntoDirection(dir, this.UnitCircle, Step.Dc);
                 q.Enqueue(reflectedTile);
                 this.KnownTiles.Add(reflectedTile);
-                generatedTiles++;
-                if (generatedTiles == numDesiredTiles)
+                if (this.KnownTiles.Count == numDesiredTiles)
                 {
                     return;
                 }
             }
 
             // //Now we somehow have to generate only Forward, Left and Right tiles iff that is allowed according to the underlying graph
-            while (q.Count != 0 && generatedTiles < numDesiredTiles)
+            while (q.Count != 0 && this.KnownTiles.Count < numDesiredTiles)
             {
                 HolonomyTile current = q.Dequeue();
                 //Reflect the tile into each of the "steps" which are currently allowed
@@ -93,8 +94,7 @@ namespace research_project
                     {
                         //Direction reflectIn = this.stepToDirection[currentForwardDir, step];
                         Direction reflectIn = ConvertStepToDirection(step, current.CurrentForwardDirection);
-                        HolonomyTile reflectedTile = current.ReflectIntoDirection(reflectIn, step, this.UnitCircle);
-                        generatedTiles++;
+                        HolonomyTile reflectedTile = current.ReflectIntoDirection(reflectIn, this.UnitCircle, step);
                         this.KnownTiles.Add(reflectedTile);
                         q.Enqueue(reflectedTile);
                     }

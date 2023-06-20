@@ -67,57 +67,24 @@ namespace research_project
                     return this.IsLeftAllowed();
             }
         }
-        
-        /// <summary>
-        /// Reflects this tile into any of North, West, South or East directions
-        /// </summary>
-        /// <param name="dir">direction into which we should reflect (N, W, S, E)</param>
-        /// <param name="step">which step was taken from this tile to get here (F, L, R)</param>
-        /// <returns></returns>
-        public HolonomyTile ReflectIntoDirection(Direction dir, Step step, Circle unitCircle)
+
+        public HolonomyTile ReflectIntoDirection(Direction dir, Circle unitCircle, Step step)
         {
             var newEdges = new Geodesic[this.Edges.Length];
             var reflectionCircle = this.Edges[Convert.ToInt32(dir)].c;
-            //swap the start and endpoint of reflectinto, that is the new edge
-            //this.Edges[Convert.ToInt32(dir)] will be an edge in the reflected tile,
-            //but with swapped start and end points. As a consequence, the start and sweep angle will also
-            //have to be recomputed
             var reflectInEdge = this.Edges[Convert.ToInt32(dir)];
-            //originalEdge = reflectInEdge with flipped start and endpoints
-            var originalEdge = new Geodesic(reflectionCircle, reflectInEdge.endPoint, reflectInEdge.startPoint);
-
-            Geodesic reflNorth = this.Edges[Convert.ToInt32(Direction.N)].ReflectIntoEdge(reflectionCircle, unitCircle);
-            Geodesic reflWest = this.Edges[Convert.ToInt32(Direction.W)].ReflectIntoEdge(reflectionCircle, unitCircle);
-            Geodesic reflSouth = this.Edges[Convert.ToInt32(Direction.S)].ReflectIntoEdge(reflectionCircle, unitCircle);
-            Geodesic reflEast = this.Edges[Convert.ToInt32(Direction.E)].ReflectIntoEdge(reflectionCircle, unitCircle);
-            switch (dir)
-            {
-                case Direction.N:
-                    newEdges[Convert.ToInt32(Direction.N)] = reflSouth;
-                    newEdges[Convert.ToInt32(Direction.W)] = reflWest;
-                    newEdges[Convert.ToInt32(Direction.S)] = originalEdge;
-                    newEdges[Convert.ToInt32(Direction.E)] = reflEast;
-                    break;
-                case Direction.W:
-                    newEdges[Convert.ToInt32(Direction.N)] = reflNorth;
-                    newEdges[Convert.ToInt32(Direction.W)] = reflEast;
-                    newEdges[Convert.ToInt32(Direction.S)] = reflSouth;
-                    newEdges[Convert.ToInt32(Direction.E)] = originalEdge;
-                    break;
-                case Direction.S:
-                    newEdges[Convert.ToInt32(Direction.N)] = originalEdge;
-                    newEdges[Convert.ToInt32(Direction.W)] = reflWest;
-                    newEdges[Convert.ToInt32(Direction.S)] = reflNorth;
-                    newEdges[Convert.ToInt32(Direction.E)] = reflEast;
-                    break;
-                case Direction.E:
-                    newEdges[Convert.ToInt32(Direction.N)] = reflNorth;
-                    newEdges[Convert.ToInt32(Direction.W)] = originalEdge;
-                    newEdges[Convert.ToInt32(Direction.S)] = reflSouth;
-                    newEdges[Convert.ToInt32(Direction.E)] = reflWest;
-                    break;
-            }
+            var originalEdgeReversed = new Geodesic(reflectionCircle, reflectInEdge.endPoint, reflectInEdge.startPoint);
+            
+            //So for any of the four directions holds: if we reflect in "dir", then the new "dir" edge will be the opposite of "dir"
+            newEdges[Convert.ToInt32(dir)] = this.Edges[Convert.ToInt32(dir.Opposite())].ReflectIntoEdge(reflectionCircle, unitCircle);
+            newEdges[Convert.ToInt32(dir.Opposite())] = originalEdgeReversed;
+            var orthogonals = dir.Orthogonals();
+            newEdges[Convert.ToInt32(orthogonals.Item1)] = this.Edges[Convert.ToInt32(orthogonals.Item1)]
+                .ReflectIntoEdge(reflectionCircle, unitCircle);
+            newEdges[Convert.ToInt32(orthogonals.Item2)] = this.Edges[Convert.ToInt32(orthogonals.Item2)]
+                .ReflectIntoEdge(reflectionCircle, unitCircle);
             return UpdateGenerationConstraints(newEdges, dir, step);
+
         }
 
         
