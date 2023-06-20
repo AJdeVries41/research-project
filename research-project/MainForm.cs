@@ -64,7 +64,7 @@ namespace research_project
                 t.MoveInitialTile(this.newOriginPoint, g);
             }
             
-            t.GenerateTiling(100);
+            t.GenerateTiling(3);
            
             //t.KnownTiles[0].FillTile(g);
             t.FillTiling(g);

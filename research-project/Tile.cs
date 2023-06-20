@@ -86,13 +86,13 @@
 //         /// </summary>
 //         /// <param name="reflectionCircle">Circle of the edge in which the reflection takes place</param>
 //         /// <returns></returns>
-//         public Tile ReflectAlongEdge(Circle reflectionCircle)
+//         public Tile ReflectIntoEdge(Circle reflectionCircle)
 //         {
 //             var newEdges = new Geodesic[this.Edges.Length];
 //             //reflect all Edges[j] into Edges[i]
 //             for (int j = 0; j < this.Edges.Length; j++)
 //             {
-//                 Geodesic reflection = this.Edges[j].ReflectAlongEdge(reflectionCircle);
+//                 Geodesic reflection = this.Edges[j].ReflectIntoEdge(reflectionCircle);
 //                 newEdges[j] = reflection;
 //             }
 //             Tile newTile = new Tile(newEdges);

@@ -61,15 +61,23 @@ namespace research_project
 
             HolonomyTile initial = this.GenerateInitialTile();
             this.KnownTiles.Add(initial);
-            generatedTiles += 1;
+            generatedTiles++;
+            if (generatedTiles == numDesiredTiles)
+            {
+                return;
+            }
             foreach (var dir in dirs)
             {
-                HolonomyTile reflectedTile = initial.ReflectIntoDirection(dir, Step.DC, this.UnitCircle);
+                HolonomyTile reflectedTile = initial.ReflectIntoDirection(dir, Step.Dc, this.UnitCircle);
                 q.Enqueue(reflectedTile);
                 this.KnownTiles.Add(reflectedTile);
+                generatedTiles++;
+                if (generatedTiles == numDesiredTiles)
+                {
+                    return;
+                }
             }
-            generatedTiles += 4;
-            
+
             // //Now we somehow have to generate only Forward, Left and Right tiles iff that is allowed according to the underlying graph
             while (q.Count != 0 && generatedTiles < numDesiredTiles)
             {

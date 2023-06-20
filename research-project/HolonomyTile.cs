@@ -86,10 +86,10 @@ namespace research_project
             //originalEdge = reflectInEdge with flipped start and endpoints
             var originalEdge = new Geodesic(reflectionCircle, reflectInEdge.endPoint, reflectInEdge.startPoint);
 
-            Geodesic reflNorth = this.Edges[Convert.ToInt32(Direction.N)].ReflectAlongEdge(reflectionCircle, unitCircle);
-            Geodesic reflWest = this.Edges[Convert.ToInt32(Direction.W)].ReflectAlongEdge(reflectionCircle, unitCircle);
-            Geodesic reflSouth = this.Edges[Convert.ToInt32(Direction.S)].ReflectAlongEdge(reflectionCircle, unitCircle);
-            Geodesic reflEast = this.Edges[Convert.ToInt32(Direction.E)].ReflectAlongEdge(reflectionCircle, unitCircle);
+            Geodesic reflNorth = this.Edges[Convert.ToInt32(Direction.N)].ReflectIntoEdge(reflectionCircle, unitCircle);
+            Geodesic reflWest = this.Edges[Convert.ToInt32(Direction.W)].ReflectIntoEdge(reflectionCircle, unitCircle);
+            Geodesic reflSouth = this.Edges[Convert.ToInt32(Direction.S)].ReflectIntoEdge(reflectionCircle, unitCircle);
+            Geodesic reflEast = this.Edges[Convert.ToInt32(Direction.E)].ReflectIntoEdge(reflectionCircle, unitCircle);
             switch (dir)
             {
                 case Direction.N:
