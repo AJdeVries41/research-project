@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Drawing;
-using System.Xml.XPath;
 
 namespace research_project
 {

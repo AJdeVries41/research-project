@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Runtime.CompilerServices;
-using System.Windows.Forms;
 
 namespace research_project
 {
@@ -29,7 +27,7 @@ namespace research_project
             this.KnownTiles = new List<HolonomyTile>();
         }
 
-        public HolonomyTile GenerateInitialTile()
+        private HolonomyTile GenerateInitialTile()
         {
             Geodesic[] edges = new Geodesic[this.InitialPoints.Count];
             int j = 1;
@@ -108,12 +106,7 @@ namespace research_project
             int stepInt = Convert.ToInt32(s);
             return (Direction) StepToDirection[dirInt, stepInt];
         }
-        
-         public static bool IsValidTiling(int p, int q)
-        {
-            return (p-2)*(q-2) > 4;
-        }
-        
+
         //see https://www.malinc.se/noneuclidean/en/poincaretiling.php why this.d is calculated like this
         protected int CalculateInitialDistance(int smallestResolution)
         {
@@ -148,10 +141,9 @@ namespace research_project
             return result;
         }
 
-        public void MoveInitialTile((double, double) B, Graphics g)
+        public void MoveInitialTile((double, double) B)
         {
-            var invCircle = GeomUtils.HyperbolicBisectorFromCenter(B, this.UnitCircle, g);
-            g.DrawEllipse(Pens.Black, invCircle.GetRectangle());
+            var invCircle = GeomUtils.HyperbolicBisectorFromCenter(B, this.UnitCircle);
             var newInitialPoints = new List<(double, double)>();
             
             //iterate thru the initial points of the tiling
@@ -175,7 +167,7 @@ namespace research_project
             }
         }
 
-        public void FillTiling(Graphics g)
+        public void DrawColoredTiling(Graphics g)
         {
             //Draw unit circle
             g.DrawEllipse(Pens.Red, this.UnitCircle.GetRectangle());

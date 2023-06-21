@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Runtime.CompilerServices;
 
 namespace research_project
 {
@@ -152,7 +151,7 @@ namespace research_project
         /// <param name="unitCircle"></param>
         /// <param name="A">Point in the exterior of unitCircle</param>
         /// <returns></returns>
-        public static Circle OrthogonalCircle(Circle unitCircle, (double, double) A, Graphics g)
+        public static Circle OrthogonalCircle(Circle unitCircle, (double, double) A)
         {
             var M = MidPoint(unitCircle.CenterPoint, A);
             //Construct a circle with M as centerpoint that passes thru origin
@@ -166,7 +165,7 @@ namespace research_project
             return desiredCircle;
         }
 
-        public static Circle HyperbolicBisectorFromCenter((double, double) B, Circle unitCircle, Graphics g)
+        public static Circle HyperbolicBisectorFromCenter((double, double) B, Circle unitCircle)
         {
             if (Distance(unitCircle.CenterPoint, B) >= unitCircle.r)
             {
@@ -179,7 +178,7 @@ namespace research_project
                 throw new ArithmeticException("Cannot construct a hyperbolic bisector for the centerpoint itself");
             }
             (double, double) invB = InvertPoint(B, unitCircle);
-            return OrthogonalCircle(unitCircle, invB, g);
+            return OrthogonalCircle(unitCircle, invB);
         }
         
         

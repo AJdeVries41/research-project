@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using System.Runtime.InteropServices;
@@ -17,7 +9,6 @@ namespace research_project
     public partial class MainForm : Form
     {
         private (double, double) newOriginPoint = (0, 0);
-        private double EPSILON = 0.0001;
         public MainForm()
         {
             InitializeComponent();
@@ -56,21 +47,17 @@ namespace research_project
             //y-axis.
 
             var lesserScreenSize = Math.Min(this.ClientSize.Width, this.ClientSize.Height);
-            HolonomyTiling t = new HolonomyTiling(lesserScreenSize, Math.PI/4);
+            HolonomyTiling t = new HolonomyTiling(lesserScreenSize-10, Math.PI/4);
 
             if (!GeomUtils.NearlyEqual(GeomUtils.Distance(newOriginPoint, (0, 0)), 0))
             {
                 //then move the origin to the newOriginPoint
-                t.MoveInitialTile(this.newOriginPoint, g);
+                t.MoveInitialTile(this.newOriginPoint);
             }
             
             t.GenerateTiling(100);
-            
-            t.FillTiling(g);
-            t.DrawTiling(g, Color.Black, 3);
-            
-            //Draw the "move to" point to help visualizing where you're moving the initial tile
-            DrawUtils.DrawPoint(g, Brushes.Purple, this.newOriginPoint);
+            t.DrawColoredTiling(g);
+            //t.DrawTiling(g, Color.Black, 3);
             
             stopwatch.Stop();
             Console.WriteLine($"Took {stopwatch.ElapsedMilliseconds} ms to generate and draw tiling");
@@ -99,18 +86,6 @@ namespace research_project
             this.Refresh();
         }
 
-        public void DrawingLab(Graphics g, HolonomyTiling t)
-        {
-            g.DrawEllipse(Pens.Red, t.UnitCircle.GetRectangle());
-            g.DrawRectangle(Pens.Orange, t.UnitCircle.GetRectangle());
-            (double, double) B = (100, 100);
-            var invB = GeomUtils.InvertPoint(B, t.UnitCircle);
-            DrawUtils.DrawPoint(g, Brushes.Orange, B);
-            DrawUtils.DrawPoint(g, Brushes.Purple, invB);
-            var bisector = GeomUtils.HyperbolicBisectorFromCenter(B, t.UnitCircle, g);
-            g.DrawEllipse(Pens.Aquamarine, bisector.GetRectangle());
-        }
 
-        
     }
 }
