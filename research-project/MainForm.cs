@@ -42,6 +42,7 @@ namespace research_project
 
         protected override void OnPaint(PaintEventArgs eventArgs)
         {
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             Graphics g = eventArgs.Graphics;
             
             //sets the origin to the middle of the screen which makes it a lot easier to draw stuff
@@ -70,6 +71,9 @@ namespace research_project
             
             //Draw the "move to" point to help visualizing where you're moving the initial tile
             DrawUtils.DrawPoint(g, Brushes.Purple, this.newOriginPoint);
+            
+            stopwatch.Stop();
+            Console.WriteLine($"Took {stopwatch.ElapsedMilliseconds} ms to generate and draw tiling");
             
         }
 
