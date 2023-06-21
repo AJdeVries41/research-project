@@ -56,8 +56,7 @@ namespace research_project
 
             var lesserScreenSize = Math.Min(this.ClientSize.Width, this.ClientSize.Height);
             HolonomyTiling t = new HolonomyTiling(lesserScreenSize, Math.PI/4);
-            g.DrawEllipse(Pens.Red, t.UnitCircle.GetRectangle());
-            
+
             if (!GeomUtils.NearlyEqual(GeomUtils.Distance(newOriginPoint, (0, 0)), 0))
             {
                 //then move the origin to the newOriginPoint
@@ -65,11 +64,11 @@ namespace research_project
             }
             
             t.GenerateTiling(100);
-           
-            //t.KnownTiles[0].FillTile(g);
+            
             t.FillTiling(g);
             t.DrawTiling(g, Color.Black, 3);
             
+            //Draw the "move to" point to help visualizing where you're moving the initial tile
             DrawUtils.DrawPoint(g, Brushes.Purple, this.newOriginPoint);
             
         }
@@ -79,19 +78,19 @@ namespace research_project
         {
             if (e.KeyCode == Keys.Up)
             {
-                this.newOriginPoint.Item2 += -10.0;
+                this.newOriginPoint.Item2 += 10.0;
             }
             else if (e.KeyCode == Keys.Down)
             {
-                this.newOriginPoint.Item2 += 10.0;
+                this.newOriginPoint.Item2 += -10.0;
             }
             else if (e.KeyCode == Keys.Right)
             {
-                this.newOriginPoint.Item1 += -10.0;
+                this.newOriginPoint.Item1 += 10.0;
             }
             else if (e.KeyCode == Keys.Left)
             {
-                this.newOriginPoint.Item1 += 10.0;
+                this.newOriginPoint.Item1 += -10.0;
             }
             this.Refresh();
         }
@@ -106,7 +105,6 @@ namespace research_project
             DrawUtils.DrawPoint(g, Brushes.Purple, invB);
             var bisector = GeomUtils.HyperbolicBisectorFromCenter(B, t.UnitCircle, g);
             g.DrawEllipse(Pens.Aquamarine, bisector.GetRectangle());
-            
         }
 
         

@@ -151,6 +151,7 @@ namespace research_project
         public void MoveInitialTile((double, double) B, Graphics g)
         {
             var invCircle = GeomUtils.HyperbolicBisectorFromCenter(B, this.UnitCircle, g);
+            g.DrawEllipse(Pens.Black, invCircle.GetRectangle());
             var newInitialPoints = new List<(double, double)>();
             
             //iterate thru the initial points of the tiling
