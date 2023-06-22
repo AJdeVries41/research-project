@@ -73,27 +73,6 @@ namespace research_project
             return new List<(double, double)>();
         }
 
-        // public List<(double, double)> Intersect(Circle other)
-        // {
-        //     //We only care about the intersections between circles iff there's exactly 2
-        //     double dist = GeomUtils.Distance(this.CenterPoint, other.CenterPoint);
-        //     if (this.r - other.r < dist && dist < this.r + other.r)
-        //     {
-        //         double cosAlpha = (Math.Pow(this.r, 2) + Math.Pow(dist, 2) - Math.Pow(other.r, 2)) / (2 * this.r * dist);
-        //         double alpha = Math.Acos(cosAlpha);
-        //         double d1 = this.r * cosAlpha;
-        //         double h = Math.Sqrt(Math.Pow(this.r, 2) - Math.Pow(d1, 2));
-        //         double yDiff = other.CenterPoint.Item2 - this.CenterPoint.Item2;
-        //         double xDiff = other.CenterPoint.Item1 - this.CenterPoint.Item1;
-        //         double theta = Math.Atan2(yDiff, xDiff);
-        //         (double, double) i1 = GeomUtils.ConvertFromPolar(this, theta + alpha);
-        //         (double, double) i2 = GeomUtils.ConvertFromPolar(this, -(theta + alpha));
-        //         return new List<(double, double)> { i1, i2 };
-        //     }
-        //
-        //     return new List<(double, double)>();
-        // }
-
         public bool Equals(Circle other)
         {
             return GeomUtils.NearlyEqual(this.r, other.r)
