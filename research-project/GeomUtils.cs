@@ -6,6 +6,12 @@ namespace research_project
     public class GeomUtils
     {
 
+        /// <summary>
+        /// Returns true if the distance between the 2 points is at most EPSILON
+        /// </summary>
+        /// <param name="d1"></param>
+        /// <param name="d2"></param>
+        /// <returns></returns>
         public static bool NearlyEqual(double d1, double d2)
         {
             if (d1 == d2)
@@ -23,6 +29,13 @@ namespace research_project
             double sol2 = (-b + Math.Sqrt(discr)) / (2 * a);
             return (sol1, sol2);
         }
+        
+        /// <summary>
+        /// Euclidean distance between 2 points
+        /// </summary>
+        /// <param name="p1"></param>
+        /// <param name="p2"></param>
+        /// <returns></returns>
         public static double Distance((double, double) p1, (double, double) p2)
         {
             var xDiff = p1.Item1 - p2.Item1;
@@ -30,6 +43,12 @@ namespace research_project
             return Math.Sqrt(Math.Pow(xDiff, 2) + Math.Pow(yDiff, 2));
         }
 
+        /// <summary>
+        /// Gets the middle point on the Euclidean line from p1 to p2
+        /// </summary>
+        /// <param name="p1"></param>
+        /// <param name="p2"></param>
+        /// <returns></returns>
         public static (double, double) MidPoint((double, double) p1, (double, double) p2)
         {
             var sumX = p1.Item1 + p2.Item1;
@@ -38,11 +57,11 @@ namespace research_project
         }
 
         /// <summary>
-        /// Convert a point on the circle c to the angle phi from the centerpoint of c
+        /// Convert a A on the circle c to the angle phi from the centerpoint of c
         /// The angle returned is always in the domain [0,2pi]
         /// </summary>
         /// <param name="c">Circle with the centerpoint to consider</param>
-        /// <param name="p">The point to convert</param>
+        /// <param name="p">The A to convert</param>
         /// <returns>The angle in polar coordinates from the centerpoint of c in domain [0, 2pi]</returns>
         public static double ConvertToPolar(Circle c, (double, double) p)
         {
@@ -59,13 +78,17 @@ namespace research_project
             return phi;
         }
 
-        //see https://www.malinc.se/noneuclidean/en/circleinversion.php
-        //Takes a point inside a circle and returns a point outside of the circle
-        public static (double, double) InvertPoint((double, double) point, Circle c)
+        /// <summary>
+        /// Inverts a A in the given circle
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="c">Circle with centerpoint O and radius r</param>
+        /// <returns>a point B such that OA * OB = r^2</returns>
+        public static (double, double) InvertPoint((double, double) A, Circle c)
         {
             
-            double x = point.Item1;
-            double y = point.Item2;
+            double x = A.Item1;
+            double y = A.Item2;
             double centerX = c.CenterPoint.Item1;
             double centerY = c.CenterPoint.Item2;
             double r = c.r;
@@ -93,6 +116,13 @@ namespace research_project
             return (invX, invY);
         }
 
+        /// <summary>
+        /// Construct a circle that goes through 3 points by solving a system of equations algebraically
+        /// </summary>
+        /// <param name="p1"></param>
+        /// <param name="p2"></param>
+        /// <param name="p3"></param>
+        /// <returns></returns>
         public static Circle CircleFromThreePoints((double, double) p1, (double, double) p2, (double, double) p3)
         {
             double a = p1.Item1;
@@ -165,11 +195,20 @@ namespace research_project
             return desiredCircle;
         }
 
+        /// <summary>
+        /// Inverts a point B to get point invB in the given unitCircle, then constructs the OrhtogonalCircle
+        /// of invB with unitCircle. This constructs a hyperbolic middle line between the origin point of the
+        /// unit circle and point B
+        /// </summary>
+        /// <param name="B"></param>
+        /// <param name="unitCircle"></param>
+        /// <returns></returns>
+        /// <exception cref="ArithmeticException"></exception>
         public static Circle HyperbolicBisectorFromCenter((double, double) B, Circle unitCircle)
         {
             if (Distance(unitCircle.CenterPoint, B) >= unitCircle.r)
             {
-                throw new ArithmeticException("This is not a valid point to move the intial tile to");
+                throw new ArithmeticException("This is not a valid A to move the intial tile to");
             }
 
             double EPSILON = 0.0001;

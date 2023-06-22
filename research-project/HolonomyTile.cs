@@ -66,6 +66,13 @@ namespace research_project
             }
         }
 
+        /// <summary>
+        /// Reflecs this tile into either north, west, south, or east
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <param name="unitCircle"></param>
+        /// <param name="step"></param>
+        /// <returns></returns>
         public HolonomyTile ReflectIntoDirection(Direction dir, Circle unitCircle, Step step)
         {
             var newEdges = new Geodesic[this.Edges.Length];
@@ -85,7 +92,14 @@ namespace research_project
 
         }
 
-        
+        /// <summary>
+        /// Updates the info necessary for determining what subsequent tiles we can generate from this tile
+        /// </summary>
+        /// <param name="newEdges"></param>
+        /// <param name="dir"></param>
+        /// <param name="step"></param>
+        /// <returns></returns>
+        /// <exception cref="SystemException"></exception>
         private HolonomyTile UpdateGenerationConstraints(Geodesic[] newEdges, Direction dir, Step step)
         {
             bool hasFirstLeftOccurred;
@@ -132,8 +146,7 @@ namespace research_project
         }
 
         /// <summary>
-        /// Set color of the tile based on the path
-        /// of this tile
+        /// Draws the tile by floodfilling the tile with a color based on its path
         /// </summary>
         /// <param name="g"></param>
         public void FillTile(Graphics g)
@@ -161,6 +174,11 @@ namespace research_project
             g.FillRegion(b, new Region(gp));
         }
         
+        /// <summary>
+        /// Draws the bounds of this tile
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="drawingPen"></param>
         public void DrawBounds(Graphics g, Pen drawingPen)
         {
             

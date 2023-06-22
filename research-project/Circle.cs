@@ -14,23 +14,12 @@ namespace research_project
             this.r = r;
             this.CenterPoint = p;
         }
-
+        
         // /// <summary>
         // /// Computes the bounding rectangle of this circle, i.e. the rectangle such that the circle touches
         // /// (and does not cross) this rectangle
         // /// </summary>
         // /// <returns></returns>
-        // public Rectangle GetRectangle()
-        // {
-        //     int r = (int) Math.Round(this.r);
-        //     int cx = (int) Math.Round(this.CenterPoint.Item1);
-        //     int cy = (int) Math.Round(this.CenterPoint.Item2);
-        //     Point bottomLeft = new Point(cx - r, cy - r);
-        //     Size rectangleSize = new Size(2 * r, 2 * r);
-        //     Rectangle boundingRectangle = new Rectangle(bottomLeft, rectangleSize);
-        //     return boundingRectangle;
-        // }
-
         public Rectangle GetRectangle()
         {
             double bottomLeftX = this.CenterPoint.Item1 - this.r;
@@ -44,6 +33,12 @@ namespace research_project
             return boundingRectangle;
         }
 
+        /// <summary>
+        /// Checks the 2 intersection points of this circle with another circle
+        /// Returns an empty list if the two circles do not intersect at two points
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public List<(double, double)> Intersect(Circle other)
         {
             var result = new List<(double, double)>();

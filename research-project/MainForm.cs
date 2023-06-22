@@ -31,6 +31,10 @@ namespace research_project
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool AllocConsole();
 
+        /// <summary>
+        /// Main method for drawing in the window
+        /// </summary>
+        /// <param name="eventArgs"></param>
         protected override void OnPaint(PaintEventArgs eventArgs)
         {
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
@@ -55,7 +59,7 @@ namespace research_project
                 t.MoveInitialTile(this.newOriginPoint);
             }
             
-            t.GenerateTiling(100);
+            t.GenerateTiling(45);
             t.DrawColoredTiling(g);
             //t.DrawTiling(g, Color.Black, 3);
             

@@ -27,6 +27,10 @@ namespace research_project
             this.KnownTiles = new List<HolonomyTile>();
         }
 
+        /// <summary>
+        /// Procedure to generate the initial tile from the initial points
+        /// </summary>
+        /// <returns></returns>
         private HolonomyTile GenerateInitialTile()
         {
             Geodesic[] edges = new Geodesic[this.InitialPoints.Count];
@@ -47,8 +51,11 @@ namespace research_project
             return new HolonomyTile(edges, Direction.O, "", false, false, false);
         }
         
-        
-        
+        /// <summary>
+        /// The main algorithm to generate a Holonomy tiling with a certain amount of tiles
+        /// </summary>
+        /// <param name="numDesiredTiles"></param>
+        /// <exception cref="ArgumentException"></exception>
         public void GenerateTiling(int numDesiredTiles = 100)
         {
             if (numDesiredTiles <= 0)
@@ -100,6 +107,12 @@ namespace research_project
             }
         }
         
+        /// <summary>
+        /// Converts a step to a direction given the currentForwardDirection of a tile
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="currentForwardDirection"></param>
+        /// <returns></returns>
         private static Direction ConvertStepToDirection(Step s, Direction currentForwardDirection)
         {
             int dirInt = Convert.ToInt32(currentForwardDirection);
@@ -107,7 +120,11 @@ namespace research_project
             return (Direction) StepToDirection[dirInt, stepInt];
         }
 
-        //see https://www.malinc.se/noneuclidean/en/poincaretiling.php why this.d is calculated like this
+        /// <summary>
+        /// Calculate the distance d how far the initial points should be from the origin
+        /// </summary>
+        /// <param name="smallestResolution"></param>
+        /// <returns></returns>
         protected int CalculateInitialDistance(int smallestResolution)
         {
             var numerator = Math.Tan((Math.PI / 2) - (Math.PI / Q)) - Math.Tan(Math.PI/P);
@@ -141,6 +158,10 @@ namespace research_project
             return result;
         }
 
+        /// <summary>
+        /// Move the intial points centerd at a new point B instead of (0, 0)
+        /// </summary>
+        /// <param name="B"></param>
         public void MoveInitialTile((double, double) B)
         {
             var invCircle = GeomUtils.HyperbolicBisectorFromCenter(B, this.UnitCircle);
@@ -155,6 +176,12 @@ namespace research_project
             this.InitialPoints = newInitialPoints;
         }
 
+        /// <summary>
+        /// Draws the lines of each tile
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="c"></param>
+        /// <param name="width"></param>
         public void DrawTiling(Graphics g, Color c, int width)
         {
             //Draw unit circle
@@ -167,6 +194,10 @@ namespace research_project
             }
         }
 
+        /// <summary>
+        /// Draws each tile with a filled color
+        /// </summary>
+        /// <param name="g"></param>
         public void DrawColoredTiling(Graphics g)
         {
             //Draw unit circle

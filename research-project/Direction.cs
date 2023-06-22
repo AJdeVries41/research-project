@@ -32,6 +32,11 @@
             return Direction.O;
         }
 
+        /// <summary>
+        /// Return the two directions which stand orthogonal to this direction
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <returns></returns>
         public static (Direction, Direction) Orthogonals(this Direction dir)
         {
             switch (dir)

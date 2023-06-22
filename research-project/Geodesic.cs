@@ -13,15 +13,13 @@ namespace research_project
         public (double, double) startPoint;
         public (double, double) endPoint;
 
+        /// <summary>
+        /// Also specify from where to draw this circle, but in a different format since g.DrawArc requires the part of a circle to be drawn
+        /// given in degrees.
+        /// </summary>
         public float startAngleDegree;
         public float sweepAngleDegree;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="c">The circle of which this geodesic is part of</param>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
+        
         public Geodesic(Circle c, (double, double) start, (double, double) end)
         {
             this.c = c;
@@ -31,6 +29,10 @@ namespace research_project
             this.sweepAngleDegree = this.ComputeSweepAngle();
         }
 
+        /// <summary>
+        /// From the startpoint and endpoint, compute the difference in degrees from the startpoint to the endpoint
+        /// </summary>
+        /// <returns></returns>
         private float ComputeSweepAngle()
         {
             var startAngle = GeomUtils.ConvertToPolar(this.c, this.startPoint);
