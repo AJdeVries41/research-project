@@ -80,7 +80,6 @@ namespace research_project
                     return;
                 }
             }
-
             while (queue.Count != 0)
             {
                 HolonomyTile current = queue.Dequeue();

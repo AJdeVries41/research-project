@@ -175,18 +175,18 @@ namespace research_project
         public void DrawBounds(Graphics g, Pen drawingPen)
         {
             foreach (var geo in this.Edges)
-             {
-                 try
-                 {
-                     g.DrawArc(drawingPen,geo.c.GetRectangle(), geo.startAngleDegree, geo.sweepAngleDegree);
-                 }
-                 catch (ArgumentException e)
-                 {
-                     Console.WriteLine($"Got argument exception for tile {this.ToString()}");
-                     //Don't try to draw this tile then I suppose...
-                     return;
-                 }
-             }
+            {
+                try
+                {
+                    g.DrawArc(drawingPen,geo.c.GetRectangle(), geo.startAngleDegree, geo.sweepAngleDegree);
+                }
+                catch (ArgumentException e)
+                {
+                    Console.WriteLine($"Got argument exception for tile {this.ToString()}");
+                    //Don't try to draw this tile then I suppose...
+                    return;
+                } 
+            }
         }
         
         public override string ToString()
