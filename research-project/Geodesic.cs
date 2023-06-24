@@ -82,10 +82,5 @@ namespace research_project
             Geodesic res = new Geodesic(resultingCircle, newStartPoint, newEndPoint);
             return res;
         }
-
-        public override string ToString()
-        {
-            return $"{nameof(c)}: {c}, {nameof(startPoint)}: {startPoint}, {nameof(endPoint)}: {endPoint}";
-        }
     }
 }

@@ -12,10 +12,9 @@ namespace research_project
         public Direction CurrentForwardDirection;
         private String path;
         //Whether we are allowed to generate a tile in a specific Step depends on three conditions
-        //https://math.stackexchange.com/questions/2222314/description-of-the-order-5-square-tiling-of-the-hyperbolic-plane-as-a-graph/2231612#2231612
         //1) No two right consecutive steps are allowed
         //2) No two left steps are allowed to happen without at least 1 right step in between
-        //You are always allowed to take the first left step that appears
+        //3) You are always allowed to take the first left step that appears
         public bool HasFirstLeftOccurred;
         //Has a right step occurred before we encountered the next left step?
         public bool RightBeforeLeft;

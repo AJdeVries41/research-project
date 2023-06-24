@@ -192,7 +192,7 @@ namespace research_project
         {
             if (Distance(unitCircle.CenterPoint, B) >= unitCircle.r)
             {
-                throw new ArithmeticException("This is not a valid A to move the intial tile to");
+                throw new ArithmeticException("Point to move initial tile to must be in the unit circle");
             }
             double EPSILON = 0.0001;
             if (Distance(unitCircle.CenterPoint, B) <= EPSILON)
