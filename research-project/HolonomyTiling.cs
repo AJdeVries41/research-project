@@ -15,7 +15,6 @@ namespace research_project
         public Circle UnitCircle { get; set; }
         public List<(double, double)> InitialPoints;
         public List<HolonomyTile> KnownTiles;
-        
 
         public HolonomyTiling(int smallestResolution, double initialRotation)
         {
@@ -64,9 +63,7 @@ namespace research_project
             }
             Direction[] dirs = { Direction.N, Direction.W, Direction.S, Direction.E };
             Step[] steps = { Step.F, Step.L, Step.R };
-            
             Queue<HolonomyTile> q = new Queue<HolonomyTile>();
-
             HolonomyTile initial = this.GenerateInitialTile();
             this.KnownTiles.Add(initial);
             if (this.KnownTiles.Count == numDesiredTiles)
@@ -143,10 +140,8 @@ namespace research_project
         /// <returns>A list of initial points from the origin point (0, 0)</returns>
         protected List<(double, double)> CalculateInitialPoints(int d, double initialRotation)
         {
-
             double angle = 2 * Math.PI / P;
             List<(double, double)> result = new List<(double, double)>();
-
             double curAngle = initialRotation;
             for (int i = 0; i < P; i++)
             {
@@ -166,7 +161,6 @@ namespace research_project
         {
             var invCircle = GeomUtils.HyperbolicBisectorFromCenter(B, this.UnitCircle);
             var newInitialPoints = new List<(double, double)>();
-            
             //iterate thru the initial points of the tiling
             for (int i = 0; i < this.InitialPoints.Count; i++)
             {

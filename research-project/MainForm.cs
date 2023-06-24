@@ -39,35 +39,24 @@ namespace research_project
         {
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             Graphics g = eventArgs.Graphics;
-            
             //sets the origin to the middle of the screen which makes it a lot easier to draw stuff
             g.TranslateTransform(this.ClientSize.Width / 2, this.ClientSize.Height / 2);
             //Flips the Y-axis such that we can use normal Euclidean coordinates
             g.ScaleTransform(1.0F, -1.0F);
-            
             //IMPORTANT
             //previously, any shapes with `drawXYZ` were drawn with topLeft point.
             //however, now we have to use the bottomLeft point because we flipped every point across the 
             //y-axis.
-
             var lesserScreenSize = Math.Min(this.ClientSize.Width, this.ClientSize.Height);
             HolonomyTiling t = new HolonomyTiling(lesserScreenSize-10, Math.PI/4);
-
             if (!GeomUtils.NearlyEqual(GeomUtils.Distance(newOriginPoint, (0, 0)), 0))
             {
                 //then move the origin to the newOriginPoint
                 t.MoveInitialTile(this.newOriginPoint);
             }
-            
             t.GenerateTiling(45);
             t.DrawColoredTiling(g);
-            //t.DrawTiling(g, Color.Black, 3);
-            
-            stopwatch.Stop();
-            Console.WriteLine($"Took {stopwatch.ElapsedMilliseconds} ms to generate and draw tiling");
-            
         }
-
 
         protected void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
@@ -89,7 +78,5 @@ namespace research_project
             }
             this.Refresh();
         }
-
-
     }
 }

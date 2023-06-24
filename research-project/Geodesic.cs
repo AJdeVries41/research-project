@@ -12,7 +12,6 @@ namespace research_project
         public Circle c;
         public (double, double) startPoint;
         public (double, double) endPoint;
-
         /// <summary>
         /// Also specify from where to draw this circle, but in a different format since g.DrawArc requires the part of a circle to be drawn
         /// given in degrees.
@@ -79,9 +78,7 @@ namespace research_project
             //and the new end point will be the old start point
             var newStartPoint = GeomUtils.InvertPoint(this.endPoint, reflectionCircle);
             var newEndPoint = GeomUtils.InvertPoint(this.startPoint, reflectionCircle);
-
             var resultingCircle = GeomUtils.CircleBetweenPointsInDisk(newStartPoint, newEndPoint, unitCircle);
-
             Geodesic res = new Geodesic(resultingCircle, newStartPoint, newEndPoint);
             return res;
         }

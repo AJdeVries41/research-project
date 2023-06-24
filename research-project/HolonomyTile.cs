@@ -79,7 +79,6 @@ namespace research_project
             var reflectionCircle = this.Edges[Convert.ToInt32(dir)].c;
             var reflectInEdge = this.Edges[Convert.ToInt32(dir)];
             var originalEdgeReversed = new Geodesic(reflectionCircle, reflectInEdge.endPoint, reflectInEdge.startPoint);
-            
             //So for any of the four directions holds: if we reflect in "dir", then the new "dir" edge will be the opposite of "dir"
             newEdges[Convert.ToInt32(dir)] = this.Edges[Convert.ToInt32(dir.Opposite())].ReflectIntoEdge(reflectionCircle, unitCircle);
             newEdges[Convert.ToInt32(dir.Opposite())] = originalEdgeReversed;
@@ -89,7 +88,6 @@ namespace research_project
             newEdges[Convert.ToInt32(orthogonals.Item2)] = this.Edges[Convert.ToInt32(orthogonals.Item2)]
                 .ReflectIntoEdge(reflectionCircle, unitCircle);
             return UpdateGenerationConstraints(newEdges, dir, step);
-
         }
 
         /// <summary>
@@ -108,38 +106,33 @@ namespace research_project
             String newPath;
             //construct the booleans that determine legal steps based on the current step
             //if we step away from the initial tile
-            if (this.IsInitialTile())
+            switch (step)
             {
-                hasFirstLeftOccurred = false;
-                rightBeforeLeft = false;
-                wasLastStepRight = false;
-                newPath = dir.ToString();
-            }
-            else if (step == Step.F)
-            {
-                hasFirstLeftOccurred = this.HasFirstLeftOccurred;
-                rightBeforeLeft = this.RightBeforeLeft;
-                wasLastStepRight = false;
-                newPath = this.path + step.ToString();
-            }
-            else if (step == Step.L)
-            {
-                hasFirstLeftOccurred = true;
-                rightBeforeLeft = false;
-                wasLastStepRight = false;
-                newPath = this.path + step.ToString();
-            }
-            else if (step == Step.R)
-            {
-                hasFirstLeftOccurred = this.HasFirstLeftOccurred;
-                rightBeforeLeft = true;
-                wasLastStepRight = true;
-                newPath = this.path + step.ToString();
-            }
-            //step = Step.Dc
-            else
-            {
-                throw new SystemException("this should not happen");
+                case Step.Dc:
+                    hasFirstLeftOccurred = false;
+                    rightBeforeLeft = false;
+                    wasLastStepRight = false;
+                    newPath = dir.ToString();
+                    break;
+                case Step.F:
+                    hasFirstLeftOccurred = this.HasFirstLeftOccurred;
+                    rightBeforeLeft = this.RightBeforeLeft;
+                    wasLastStepRight = false;
+                    newPath = this.path + step.ToString();
+                    break;
+                case Step.L:
+                    hasFirstLeftOccurred = true;
+                    rightBeforeLeft = false;
+                    wasLastStepRight = false;
+                    newPath = this.path + step.ToString();
+                    break;
+                //case Step.R
+                default:
+                    hasFirstLeftOccurred = this.HasFirstLeftOccurred;
+                    rightBeforeLeft = true;
+                    wasLastStepRight = true;
+                    newPath = this.path + step.ToString();
+                    break;
             }
             HolonomyTile reflectedTile = new HolonomyTile(newEdges, dir, newPath, hasFirstLeftOccurred, rightBeforeLeft, wasLastStepRight);
             return reflectedTile;
@@ -181,8 +174,7 @@ namespace research_project
         /// <param name="drawingPen"></param>
         public void DrawBounds(Graphics g, Pen drawingPen)
         {
-            
-             foreach (var geo in this.Edges)
+            foreach (var geo in this.Edges)
              {
                  try
                  {
@@ -197,8 +189,6 @@ namespace research_project
              }
         }
         
-        
-
         public override string ToString()
         {
             return this.path;

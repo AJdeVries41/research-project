@@ -11,5 +11,4 @@
         //Don't care (this happens when you generate the initial layer of new tiles, since those don't use steps yet)
         Dc = -1
     }
-    
 }

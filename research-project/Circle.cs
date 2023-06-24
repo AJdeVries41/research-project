@@ -43,7 +43,6 @@ namespace research_project
         {
             var result = new List<(double, double)>();
             //We only care about circles that have 2 solutions
-            
             double dist = GeomUtils.Distance(this.CenterPoint, other.CenterPoint);
             if (Math.Abs(this.r - other.r) < dist && dist < this.r + other.r)
             {
@@ -51,14 +50,12 @@ namespace research_project
                 double b = this.CenterPoint.Item2;
                 double c = other.CenterPoint.Item1;
                 double d = other.CenterPoint.Item2;
-
                 double r1 = this.r;
                 double r2 = other.r;
                 
                 //x = alpha*y+beta
                 double alpha = (2 * b - 2 * d) / (-2 * a + 2 * c);
                 double beta = ((r1*r1) - (r2*r2) - (a*a) + (c*c) - (b*b) + (d*d)) / (-2 * a + 2 * c);
-                
                 //Solve for y using the 2nd equation
                 double v1 = (alpha * alpha + 1);
                 double v2 = 2 * alpha * beta - 2 * c * alpha - 2 * d;
