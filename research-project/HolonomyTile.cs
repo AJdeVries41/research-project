@@ -41,12 +41,7 @@ namespace research_project
             this.RightBeforeLeft = rightBeforeLeft;
             this.WasLastStepRight = wasLastStepRight;
         }
-        
-        private bool IsInitialTile()
-        {
-            return this.CurrentForwardDirection == Direction.O;
-        }
-        
+
         private bool IsLeftAllowed()
         {
             return (!this.HasFirstLeftOccurred) || RightBeforeLeft;
