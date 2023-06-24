@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace research_project
 {
@@ -98,6 +99,10 @@ namespace research_project
                         Direction reflectIn = ConvertStepToDirection(step, current.CurrentForwardDirection);
                         HolonomyTile reflectedTile = current.ReflectIntoDirection(reflectIn, this.UnitCircle, step);
                         this.KnownTiles.Add(reflectedTile);
+                        if (this.KnownTiles.Count == numDesiredTiles)
+                        {
+                            return;
+                        }
                         q.Enqueue(reflectedTile);
                     }
                 }
